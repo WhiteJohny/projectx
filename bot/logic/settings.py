@@ -1,8 +1,9 @@
 import logging
+import os
 
 from aiogram import Bot
-
-from bot.logic.secrets import bot_token
+from dotenv import load_dotenv
+from dataclasses import dataclass
 
 
 logger = logging.getLogger()
@@ -21,5 +22,13 @@ file_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
+load_dotenv()
 
-bot = Bot(token=bot_token, parse_mode='HTML')
+
+@dataclass
+class Secrets:
+    bot_token: str = os.getenv("BOT_TOKEN")
+    admin_id: int = int(os.getenv("ADMIN_ID"))
+
+
+bot = Bot(token=Secrets.bot_token, parse_mode='HTML')
