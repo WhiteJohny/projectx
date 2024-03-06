@@ -47,28 +47,28 @@ class NeuralNetwork:
         )
 
     @staticmethod
-    def sigmoid(x):
+    def __sigmoid(x):
         return 1 / (1 + np.exp(-x))
 
     @staticmethod
-    def sigmoid_derivative(x):
-        s = NeuralNetwork.sigmoid(x)
+    def __sigmoid_derivative(x):
+        s = NeuralNetwork.__sigmoid(x)
         return s * (1 - s)
 
     @staticmethod
-    def cost(x, target):
+    def __cost(x, target):
         return np.square(x - target).sum()
 
     @staticmethod
-    def cost_derivative(x, target):
+    def __cost_derivative(x, target):
         return 2 * (x - target)
 
     def eval(self, v):
         for layer in self.layers:
-            v = self.sigmoid(np.dot(v, layer.weights) + layer.biases)
+            v = self.__sigmoid(np.dot(v, layer.weights) + layer.biases)
         return v
 
-    def backpropagation(self, x, target):
+    def __backpropagation(self, x, target):
         gradient_w = []
         gradient_b = []
 
@@ -79,16 +79,16 @@ class NeuralNetwork:
         for layer in self.layers:
             z = np.dot(activation, layer.weights) + layer.biases
             zs.append(z)
-            activation = self.sigmoid(activation)
+            activation = self.__sigmoid(activation)
             activations.append(activation)
 
         # вычисление градиента
-        delta = self.cost_derivative(activations[-1], target) * self.sigmoid_derivative(zs[-1])
+        delta = self.__cost_derivative(activations[-1], target) * self.__sigmoid_derivative(zs[-1])
         gradient_b.append(delta)
         gradient_w.append(np.dot(delta, activations[-2].transpose()))
         for i in range(len(self.layers) - 2, -1, -1):
             z = zs[i]
-            delta = np.dot(self.layers[i + 1].weights.transpose(), delta) * self.sigmoid_derivative(z)
+            delta = np.dot(self.layers[i + 1].weights.transpose(), delta) * self.__sigmoid_derivative(z)
             gradient_b.append(delta)
             gradient_w.append(np.dot(delta, activations[i - 1].transpose()))
 
@@ -107,7 +107,7 @@ class NeuralNetwork:
                 gradient_b_sum = [np.zeros(layer.biases.shape) for layer in self.layers]
                 gradient_w_sum = [np.zeros(layer.weights.shape) for layer in self.layers]
                 for x, target in batch:
-                    gradient_b, gradient_w = self.backpropagation(x, target)
+                    gradient_b, gradient_w = self.__backpropagation(x, target)
                     for i in range(len(self.layers)):
                         gradient_b_sum[i] += gradient_b[i]
                         gradient_w_sum[i] += gradient_w[i]
@@ -117,11 +117,11 @@ class NeuralNetwork:
                     self.layers[i].biases -= gradient_b_sum[i] * step_size
                     self.layers[i].weights -= gradient_w_sum[i] * step_size
             if testing_data is None:
-                print(f"Iteration {iteration} done")
+                print(f"Итерация {iteration} выполнена")
             else:
                 # тестируем и вычисляем среднюю ошибку
                 mean_err = 0
                 for x, target in testing_data:
-                    mean_err += self.cost(self.eval(x), target)
+                    mean_err += self.__cost(self.eval(x), target)
                 mean_err /= len(testing_data)
-                print(f"Iteration {iteration} done, mean error: {mean_err}")
+                print(f"Итерация {iteration} выполнена, средняя ошибка: {mean_err}")
