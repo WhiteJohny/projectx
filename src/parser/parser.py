@@ -1,5 +1,5 @@
-def parser(x: int) -> str:
+def parser(x: int) -> bool:
     if x == 1:
-        return "Yes"
+        return True
 
-    return "No"
+    return False
