@@ -1,2 +1,0 @@
-async def parser():
-    pass
