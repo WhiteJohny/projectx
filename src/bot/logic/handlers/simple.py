@@ -1,7 +1,7 @@
 from aiogram.types import Message
 
-from bot.logic.utils.url_validation import url_validation
-from bot.logic.views import good_link_msg, bad_link_msg, garbage_msg, start_msg, help_msg
+from src.bot.logic.utils.url_validation import url_validation
+from src.bot.logic.views import good_link_msg, bad_link_msg, garbage_msg, start_msg, help_msg
 
 
 async def link_handler(message: Message):

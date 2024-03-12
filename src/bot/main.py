@@ -3,9 +3,9 @@ import asyncio
 from aiogram import Dispatcher, F
 from aiogram.filters import Command
 
-from logic.handlers.simple import start_command, help_command, link_handler, garbage_handler
-from logic.handlers.events import bot_start, bot_stop
-from logic.settings import bot
+from src.bot.logic.handlers.simple import start_command, help_command, link_handler, garbage_handler
+from src.bot.logic.handlers.events import bot_start, bot_stop
+from src.bot.logic.settings import bot
 
 
 async def start():

@@ -1,7 +1,7 @@
-from bot.logic.utils.commands import set_commands
-from bot.logic.settings import bot
-from bot.logic.views import bot_start_msg, bot_stop_msg
-from bot.logic.settings import Secrets
+from src.bot.logic.utils.commands import set_commands
+from src.bot.logic.settings import bot
+from src.bot.logic.views import bot_start_msg, bot_stop_msg
+from src.bot.logic.settings import Secrets
 
 
 async def bot_start():

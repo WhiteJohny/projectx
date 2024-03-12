@@ -5,6 +5,6 @@ WORKDIR /bot
 COPY requirements.txt /bot
 RUN pip install --upgrade pip && install -r requirements.txt
 
-COPY . /bot
+COPY src/bot /bot
 
 CMD [ "python", "./main.py" ]
