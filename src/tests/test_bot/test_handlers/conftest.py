@@ -1,8 +1,19 @@
 from aiogram import Dispatcher
+from aiogram.fsm.storage.memory import MemoryStorage
 
 import pytest
 
+
 from src.tests.test_bot.mocked_bot import MockedBot
+
+
+@pytest.fixture()
+async def memory_storage():
+    storage = MemoryStorage()
+    try:
+        yield storage
+    finally:
+        await storage.close()
 
 
 @pytest.fixture()

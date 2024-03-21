@@ -12,11 +12,12 @@ browser.get(f"https://www.foxnews.com/search-results/search?q={search_query}")
 select = browser.find_element(By.CLASS_NAME, "select")
 select.click()
 
-select_article = browser.find_element(By.XPATH, "//*[@id='wrapper']/div[2]/div[1]/div/div[2]/div[2]/ul/li[1]/label/input")
+select_article = browser.find_element(By.XPATH, "//*[@id='wrapper']/div[2]/div[1]/div/div[2]/div[2]/ul/li["
+                                                "1]/label/input")
 select_article.click()
 select.click()
 
-month_min ='//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[1]/button'
+month_min = '//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[1]/button'
 date_min = '//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[2]/button'
 year_min = '//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[3]/button'
 month_max = '//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[2]/div[1]/button'

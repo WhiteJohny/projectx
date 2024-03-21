@@ -1,10 +1,10 @@
 FROM PYTHON:3.11
 
-WORKDIR /bot
+WORKDIR /projectx
 
-COPY requirements.txt /bot
+COPY requirements.txt /projectx
 RUN pip install --upgrade pip && install -r requirements.txt
 
-COPY src/bot /bot
+COPY /projectx /projectx
 
 CMD [ "python", "./main.py" ]
