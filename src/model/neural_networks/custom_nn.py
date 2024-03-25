@@ -4,7 +4,7 @@ import time
 from dataclasses import dataclass
 
 
-class NeuralNetwork:
+class CustomNN:
     @dataclass
     class __Layer:
         weights: any
@@ -31,8 +31,8 @@ class NeuralNetwork:
     @staticmethod
     def from_file(filepath: str):
         layers = json.load(open(filepath, "r"))
-        network = NeuralNetwork.__new__(NeuralNetwork)
-        network.layers = [NeuralNetwork.__Layer(
+        network = CustomNN.__new__(CustomNN)
+        network.layers = [CustomNN.__Layer(
             weights=np.array(layer["weights"]),
             biases=np.array(layer["biases"])
         ) for layer in layers]
@@ -53,7 +53,7 @@ class NeuralNetwork:
 
     @staticmethod
     def __sigmoid_derivative(x):
-        s = NeuralNetwork.__sigmoid(x)
+        s = CustomNN.__sigmoid(x)
         return s * (1 - s)
 
     @staticmethod

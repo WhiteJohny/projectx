@@ -1,5 +1,5 @@
 import pandas as pd
-from neural_network import NeuralNetwork
+from neural_networks import CustomNN
 from clearml import Task
 
 
@@ -48,9 +48,9 @@ def main():
             elif inp.startswith("task"):
                 task = Task.init("ProjectX", inp.split()[1])
             elif inp.startswith("new"):
-                network = NeuralNetwork(*map(int, inp.split()[1:6]))
+                network = CustomNN(*map(int, inp.split()[1:6]))
             elif inp.startswith("load_file"):
-                network = NeuralNetwork.from_file(inp.split()[1])
+                network = CustomNN.from_file(inp.split()[1])
             elif inp.startswith("save_file"):
                 network.save_to_file(inp.split()[1])
             elif inp.startswith("train"):
