@@ -1,5 +1,6 @@
 import json
 import numpy as np
+import time
 from dataclasses import dataclass
 
 
@@ -14,17 +15,17 @@ class NeuralNetwork:
             np.random.seed(random_seed)
         self.layers = []
         self.layers.append(self.__Layer(
-            weights=np.random.randn(input_size, hidden_size),
-            biases=np.zeros((1, hidden_size))
+            weights=np.random.randn(hidden_size, input_size),
+            biases=np.zeros(hidden_size)
         ))
         for i in range(hidden_count - 1):
             self.layers.append(self.__Layer(
                 weights=np.random.randn(hidden_size, hidden_size),
-                biases=np.zeros((1, hidden_size))
+                biases=np.zeros(hidden_size)
             ))
         self.layers.append(self.__Layer(
-            weights=np.random.randn(hidden_size, output_size),
-            biases=np.zeros((1, output_size))
+            weights=np.random.randn(output_size, hidden_size),
+            biases=np.zeros(output_size)
         ))
 
     @staticmethod
@@ -65,7 +66,7 @@ class NeuralNetwork:
 
     def eval(self, v):
         for layer in self.layers:
-            v = self.__sigmoid(np.dot(v, layer.weights) + layer.biases)
+            v = self.__sigmoid(np.dot(layer.weights, v) + layer.biases)
         return v
 
     def __backpropagation(self, x, target):
@@ -77,22 +78,20 @@ class NeuralNetwork:
         activations = [x]
         zs = []
         for layer in self.layers:
-            z = np.dot(activation, layer.weights) + layer.biases
+            z = np.dot(layer.weights, activation) + layer.biases
             zs.append(z)
             activation = self.__sigmoid(z)
             activations.append(activation)
         cost = self.__cost(activation, target)
 
         # вычисление градиента
-        # TODO: правильно сделать перемножение матриц и векторов
         delta = self.__cost_derivative(activations[-1], target) * self.__sigmoid_derivative(zs[-1])
         gradient_b.append(delta)
-        gradient_w.append(np.dot(delta, activations[-2].transpose()))
-        for i in range(len(self.layers) - 2, -1, -1):
-            z = zs[i]
-            delta = np.dot(self.layers[i + 1].weights.transpose(), delta) * self.__sigmoid_derivative(z)
+        gradient_w.append(np.dot(delta[:, np.newaxis], activations[-2][np.newaxis, :]))
+        for i in range(2, len(self.layers) + 1):
+            delta = np.dot(self.layers[-i + 1].weights.transpose(), delta) * self.__sigmoid_derivative(zs[-i])
             gradient_b.append(delta)
-            gradient_w.append(np.dot(delta, activations[i - 1].transpose()))
+            gradient_w.append(np.dot(delta[:, np.newaxis], activations[-i - 1][np.newaxis, :]))
 
         # Т.к. градиенты слоёв добавлялись в противоположном порядке, нужно перевернуть
         gradient_b.reverse()
@@ -100,20 +99,20 @@ class NeuralNetwork:
         return gradient_b, gradient_w, cost
 
     def train(self, training_data, iterations=1000, learning_rate=0.1, batch_size=10, seed=None, testing_data=None, logger=None):
+        training_data = training_data.to_numpy()
+        if seed is not None:
+            np.random.seed(seed)
         for iteration in range(iterations):
-            if seed is not None:
-                np.random.seed(seed)
-            training_data = training_data.to_numpy()
-            np.random.shuffle(training_data)
-            # разбиваем данные на части
             mean_cost = 0
+            # разбиваем данные на части
+            np.random.shuffle(training_data)
             for j in range(0, len(training_data), batch_size):
                 batch = training_data[j:j+batch_size]
                 # вычисляем средний градиент для каждой части
                 gradient_b_sum = [np.zeros(layer.biases.shape) for layer in self.layers]
                 gradient_w_sum = [np.zeros(layer.weights.shape) for layer in self.layers]
                 for row in batch:
-                    x, target = np.array([row[1:]]), np.array([row[0:1]])
+                    x, target = row[1:], row[0:1]
                     gradient_b, gradient_w, cost = self.__backpropagation(x, target)
                     mean_cost += cost
                     for i in range(len(self.layers)):
@@ -127,7 +126,7 @@ class NeuralNetwork:
             mean_cost /= len(training_data)
             if testing_data is None:
                 if logger is None:
-                    print(f"Итерация {iteration} выполнена, средняя ошибка: {mean_cost}")
+                    print(f"[{time.strftime('%H:%M:%S')}] Итерация {iteration} выполнена, средняя ошибка: {mean_cost})")
                 else:
                     logger.report_scalar("Loss", "Train", iteration=iteration, value=mean_cost)
             else:
@@ -137,7 +136,7 @@ class NeuralNetwork:
                     test_mean_cost += self.__cost(self.eval(x), target)
                 test_mean_cost /= len(testing_data)
                 if logger is None:
-                    print(f"Итерация {iteration} выполнена, средняя ошибка: {mean_cost}, средняя ошибка тестов: {test_mean_cost}")
+                    print(f"[{time.strftime('%H:%M:%S')}] Итерация {iteration} выполнена, средняя ошибка: {mean_cost}, средняя ошибка тестов: {test_mean_cost}")
                 else:
                     logger.report_scalar("Loss", "Train", iteration=iteration, value=mean_cost)
                     logger.report_scalar("Loss", "Test", iteration=iteration, value=test_mean_cost)
