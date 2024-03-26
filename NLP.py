@@ -3,6 +3,8 @@ import string
 import re
 import nltk
 from sklearn.feature_extraction.text import CountVectorizer
+from clearml import Dataset
+import os
 
 
 def remove_punctuations(text):
@@ -10,7 +12,7 @@ def remove_punctuations(text):
 
 
 def tokenise(text):
-    return re.split("\W+", text)
+    return re.split(r"\W+", text)
 
 
 def remove_stopwords(text):
@@ -30,8 +32,12 @@ def vectorization(text):
     return d
 
 
-def processing_dataset(s):
-    data = pd.read_csv("Sentiment_dataset.csv")
+def processing_dataset(raw_dataset_id: str, vector_size: int = 0):
+    print("Загрузка датасета для обработки...")
+    raw_dataset = Dataset.get(dataset_id=raw_dataset_id)
+    data = pd.read_csv(raw_dataset.get_local_copy() + "/dataset.csv")
+
+    print("Обработка датасета...")
     data = data.drop(["news_title", "reddit_title", "url"], axis=1)
     data["text"] = data['text'].apply(lambda x: remove_punctuations(x))
     data["text"] = data['text'].apply(lambda x: tokenise(x.lower()))
@@ -41,7 +47,26 @@ def processing_dataset(s):
     df = pd.DataFrame(d, data['sentiment'])
     sorted_df = df.loc[:, df.sum().sort_values().index]
     column_names = sorted_df.columns.tolist()
-    return sorted_df[column_names[0 - s:]]
+    processed_data = sorted_df[column_names[0 - vector_size:]]
+
+    print("Сохранение датасета...")
+    tags = ["preprocessed"]
+    if vector_size > 0: tags.append("reduced")
+    processed_dataset = Dataset.create(
+        dataset_name=raw_dataset.name,
+        dataset_project=raw_dataset.project,
+        parent_datasets=[raw_dataset],
+        dataset_tags=tags
+    )
+    processed_data.to_csv("dataset.csv")
+    processed_dataset.add_files("dataset.csv")
+    processed_dataset.upload()
+    processed_dataset.finalize()
+    os.remove("dataset.csv")
+
+    print("Готово")
+    return processed_data
+
 
 def processing_string(x):
     x = remove_punctuations(x)
@@ -50,9 +75,10 @@ def processing_string(x):
     x = lemmatizing(x)
     return x
 
-s = 100
-a = "adams For example, annex 38 regulates the requirements pertaining to wastewater from textile manufacturing and textile finishing plants."
-g = processing_dataset(s)
-h = processing_string(a)
-print(h)
-print(g)
+
+# s = 100
+# a = "adams For example, annex 38 regulates the requirements pertaining to wastewater from textile manufacturing and textile finishing plants."
+# g = processing_dataset(s)
+# h = processing_string(a)
+# print(h)
+# print(g)
