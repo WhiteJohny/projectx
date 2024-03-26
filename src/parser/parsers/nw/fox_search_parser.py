@@ -2,6 +2,16 @@ from selenium import webdriver
 import time
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup as bs
+from datetime import timedelta, datetime
+
+cur_date = datetime.now()
+cur_month = str(cur_date)[5:7]
+cur_day = str(cur_date)[8:10]
+
+week_ago = cur_date - timedelta(7)
+week_year = str(week_ago)[:4]
+week_month = str(week_ago)[5:7]
+week_day = str(week_ago)[8:10]
 
 browser = webdriver.Chrome()
 browser.maximize_window()
@@ -16,6 +26,7 @@ select_article = browser.find_element(By.XPATH, "//*[@id='wrapper']/div[2]/div[1
 select_article.click()
 select.click()
 
+#кнопки для выбора даты
 month_min ='//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[1]/button'
 date_min = '//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[2]/button'
 year_min = '//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[3]/button'
@@ -25,27 +36,27 @@ year_max = '//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[2]/div[3]/but
 
 mmin_b = browser.find_element(By.XPATH, month_min)
 mmin_b.click()
-m1 = browser.find_element(By.XPATH, '//*[@id="03"]')
+m1 = browser.find_element(By.XPATH, f'//*[@id="{week_month}"]')
 m1.click()
 time.sleep(1)
 dmin_b = browser.find_element(By.XPATH, date_min)
 dmin_b.click()
-d1 = browser.find_element(By.XPATH, '/html/body/div/div/div/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[2]/ul/li[1]')
+d1 = browser.find_element(By.XPATH, f'/html/body/div/div/div/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[2]/ul/li[{week_day}]')
 d1.click()
 time.sleep(1)
 ymin_b =  browser.find_element(By.XPATH, year_min)
 ymin_b.click()
-y1 = browser.find_element(By.XPATH, '//*[@id="2024"]')
+y1 = browser.find_element(By.XPATH, f'//*[@id="{week_year}"]')
 y1.click()
 time.sleep(1)
 mmax_b = browser.find_element(By.XPATH, month_max)
 mmax_b.click()
-m2 = browser.find_element(By.XPATH, '/html/body/div/div/div/div[2]/div[1]/div/div[2]/div[3]/div[2]/div[1]/ul/li[3]')
+m2 = browser.find_element(By.XPATH, f'/html/body/div/div/div/div[2]/div[1]/div/div[2]/div[3]/div[2]/div[1]/ul/li[{cur_month}]')
 m2.click()
 time.sleep(1)
 dmax_b = browser.find_element(By.XPATH, date_max)
 dmax_b.click()
-d2 = browser.find_element(By.XPATH, '/html/body/div/div/div/div[2]/div[1]/div/div[2]/div[3]/div[2]/div[2]/ul/li[10]')
+d2 = browser.find_element(By.XPATH, f'/html/body/div/div/div/div[2]/div[1]/div/div[2]/div[3]/div[2]/div[2]/ul/li[{cur_day}]')
 d2.click()
 time.sleep(1)
 ymax_b = browser.find_element(By.XPATH, year_max)

@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup as bs
 url1 = "https://abcnews.go.com/International/wireStory/chinese-coast-guard-blocks-vessels-off-south-china-107795637"
 url = "https://abcnews.go.com/International/israel-hamas-talks-cease-fire-hostage-deal-gaza-war/story?id=107801137"
 
-r = requests.get(url)
+r = requests.get(blogs)
 
 soup = bs(r.content, "html.parser")
 
