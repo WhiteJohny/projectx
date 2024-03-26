@@ -12,6 +12,10 @@ async def set_commands(bot: Bot):
             command='help',
             description='Помощь по функционалу'
         ),
+        BotCommand(
+            command='news',
+            description='Выбор новостного сайта'
+        ),
     ]
 
     await bot.set_my_commands(bot_commands, BotCommandScopeDefault())

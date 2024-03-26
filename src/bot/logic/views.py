@@ -15,7 +15,7 @@ def start_msg(name):
 
 
 def help_msg():
-    return f"Скинь мне ссылку на сайт новостей, а я расскажу тебе - плохие они или хорошие!"
+    return f"Напиши /news, чтобы начать!"
 
 
 def bot_start_msg():
@@ -24,3 +24,7 @@ def bot_start_msg():
 
 def bot_stop_msg():
     return "Бот завершил работу"
+
+
+def news_command_message():
+    return 'Выберите режим'

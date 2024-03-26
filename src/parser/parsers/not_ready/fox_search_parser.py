@@ -22,12 +22,17 @@ browser.get(f"https://www.foxnews.com/search-results/search?q={search_query}")
 select = browser.find_element(By.CLASS_NAME, "select")
 select.click()
 
-select_article = browser.find_element(By.XPATH, "//*[@id='wrapper']/div[2]/div[1]/div/div[2]/div[2]/ul/li[1]/label/input")
+select_article = browser.find_element(By.XPATH, "//*[@id='wrapper']/div[2]/div[1]/div/div[2]/div[2]/ul/li["
+                                                "1]/label/input")
 select_article.click()
 select.click()
 
+<<<<<<< HEAD:src/parser/parsers/nw/fox_search_parser.py
 #кнопки для выбора даты
 month_min ='//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[1]/button'
+=======
+month_min = '//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[1]/button'
+>>>>>>> 280a5c381c1bc5648557ff1399f1ae145a69a500:src/parser/parsers/fox_search_parser.py
 date_min = '//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[2]/button'
 year_min = '//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[1]/div[3]/button'
 month_max = '//*[@id="wrapper"]/div[2]/div[1]/div/div[2]/div[3]/div[2]/div[1]/button'
