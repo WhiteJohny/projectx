@@ -37,12 +37,12 @@ async def news_choosing_one(callback: CallbackQuery, state: FSMContext):
 
     await callback.message.delete()
 
-    if news == 'fox':
-        await state.set_state(News.choosing_fox_one)
-    elif news == '2':
-        await state.set_state(News.choosing_2_one)
-    else:
-        await state.set_state(News.choosing_3_one)
+    if news == 'rt':
+        await state.set_state(News.choosing_rt_one)
+    elif news == 'nn':
+        await state.set_state(News.choosing_nn_one)
+    elif news == 'nyp':
+        await state.set_state(News.choosing_nyp_one)
 
     return await callback.message.answer(text='Отправьте ссылку на вашу новость')
 
@@ -52,11 +52,11 @@ async def news_choosing_many(callback: CallbackQuery, state: FSMContext):
 
     await callback.message.delete()
 
-    if news == 'fox':
-        await state.set_state(News.choosing_fox_many)
-    elif news == '2':
-        await state.set_state(News.choosing_2_many)
-    else:
-        await state.set_state(News.choosing_3_many)
+    if news == 'rt':
+        await state.set_state(News.choosing_rt_many)
+    elif news == 'nn':
+        await state.set_state(News.choosing_nn_many)
+    elif news == 'nyp':
+        await state.set_state(News.choosing_nyp_many)
 
     return await callback.message.answer(text='Введите ключевое слово(а)')

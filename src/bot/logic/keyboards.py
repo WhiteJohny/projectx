@@ -17,16 +17,16 @@ mode_choose = InlineKeyboardMarkup(inline_keyboard=[
 news_choose = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
-            text='Foxnews',
-            callback_data='news_fox'
+            text='RT',
+            callback_data='news_rt'
         ),
         InlineKeyboardButton(
-            text='news2',
-            callback_data='news_2'
+            text='NN',
+            callback_data='news_nn'
         ),
         InlineKeyboardButton(
-            text='newsw3',
-            callback_data='news_3'
+            text='NYP',
+            callback_data='news_nyp'
         )
     ]
 ])

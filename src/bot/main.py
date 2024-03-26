@@ -5,10 +5,12 @@ from aiogram import Dispatcher, F
 from aiogram.filters import Command, StateFilter
 from aiogram.methods import DeleteWebhook
 
-from src.bot.logic.handlers.simple import start_command, help_command, fox_search_many_handler, garbage_handler,\
-    news_command, n2_search_many_handler, n2_search_one_handler, n3_search_many_handler, fox_search_one_handler, \
-    n3_search_one_handler
+from src.bot.logic.handlers.simple import start_command, help_command, garbage_handler, news_command,\
+    rt_search_many_handler, rt_search_one_handler, nn_search_many_handler, nn_search_one_handler,\
+    nyp_search_many_handler, nyp_search_one_handler
+
 from src.bot.logic.handlers.events import bot_start, bot_stop, mode_choosing, news_choosing_one, news_choosing_many
+
 from src.bot.logic.settings import bot
 from src.bot.logic.fsm import News
 
@@ -23,12 +25,12 @@ async def start():
     dp.message.register(help_command, Command(commands='help'))
     dp.message.register(news_command, Command(commands='news'))
 
-    dp.message.register(fox_search_many_handler, F.text, StateFilter(News.choosing_fox_many))
-    dp.message.register(fox_search_one_handler, F.text, StateFilter(News.choosing_fox_one))
-    dp.message.register(n2_search_many_handler, F.text, StateFilter(News.choosing_2_many))
-    dp.message.register(n2_search_one_handler, F.text, StateFilter(News.choosing_2_one))
-    dp.message.register(n3_search_many_handler, F.text, StateFilter(News.choosing_3_many))
-    dp.message.register(n3_search_one_handler, F.text, StateFilter(News.choosing_3_one))
+    dp.message.register(rt_search_many_handler, F.text, StateFilter(News.choosing_rt_many))
+    dp.message.register(rt_search_one_handler, F.text, StateFilter(News.choosing_rt_one))
+    dp.message.register(nn_search_many_handler, F.text, StateFilter(News.choosing_nn_many))
+    dp.message.register(nn_search_one_handler, F.text, StateFilter(News.choosing_nn_one))
+    dp.message.register(nyp_search_many_handler, F.text, StateFilter(News.choosing_nyp_many))
+    dp.message.register(nyp_search_one_handler, F.text, StateFilter(News.choosing_nyp_one))
     dp.message.register(garbage_handler)
 
     dp.callback_query.register(mode_choosing, F.data.startswith("mode_"), StateFilter(News.choosing_mode))

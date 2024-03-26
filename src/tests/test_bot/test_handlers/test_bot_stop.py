@@ -1,7 +1,7 @@
 """
 import pytest
 
-from src.tests.test_bot.confitest import bot
+from src.tests.test_bot.conftest import bot
 from src.bot.logic.settings import Secrets
 from src.bot.logic.handlers.events import bot_stop
 from src.bot.logic.views import bot_stop_msg

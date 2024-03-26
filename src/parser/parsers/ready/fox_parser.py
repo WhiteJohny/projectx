@@ -1,7 +1,12 @@
-from selenium import webdriver
+import requests
 import time
-from selenium.webdriver.common.by import By
+
 from bs4 import BeautifulSoup as bs
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+from src.model.model import model_imitation
 
 
 def fox_search(search_query):
@@ -83,3 +88,47 @@ def fox_search(search_query):
     browser.close()
 
     return links
+
+
+def fox_result(url):
+    try:
+        r = requests.get(url)
+    except Exception:
+        return None
+
+    soup = bs(r.content, "html.parser")
+
+    article = soup.find("article")
+
+    try:
+        news_title = article.find(class_="headline speakable").text
+        paywall = soup.find('div', class_="article-body")
+
+        text = ''
+
+        for p in paywall.findAll('p'):
+            text += p.text + '\n'
+
+        return news_title, text
+    except AttributeError:
+        return None
+
+
+def fox_many_parser(search_query):
+    news_list = []
+
+    links = fox_search(search_query)
+
+    for link in links:
+        news_list.append(fox_result(link))
+
+    return model_imitation(news_list)
+
+
+def fox_one_parser(url):
+    text = fox_result(url)
+
+    if text is None:
+        return "Ваша ссылка недействительна или она не с foxnews"
+
+    return "Это позитивная новость!" if model_imitation([text])[:3] == '100' else "Это печальная новость("

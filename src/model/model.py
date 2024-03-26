@@ -2,7 +2,7 @@ from random import randint
 
 
 def model_imitation(news_list):
-    if news_list == [None, None]:
+    if not news_list or news_list == [None, None]:
         return "Новостей по такому ключевому слову(ам) нет"
 
     good_mood = counter = 0
