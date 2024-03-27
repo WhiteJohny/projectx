@@ -24,13 +24,23 @@ def lemmatizing(text):
     w = nltk.WordNetLemmatizer()
     return " ".join([w.lemmatize(word) for word in text])
 
-
 def vectorization(text):
     cv = CountVectorizer()
     d = cv.fit_transform(text)
     d = d.toarray()
+    global l
+    l = list(cv.vocabulary_.keys())
+    l = dict((word, index) for index, word in enumerate(l))
     return d
 
+def vectorization_for_str(x: str):
+    f = [0] * len(l)
+    for i in x.split():
+        try:
+            f[l[i]] += 1
+        except KeyError:
+            pass
+    return f
 
 def processing_dataset(raw_dataset_id: str, vector_size: int = 0):
     print("Загрузка датасета для обработки...")
@@ -73,10 +83,11 @@ def processing_string(x):
     x = tokenise(x.lower())
     x = remove_stopwords(x)
     x = lemmatizing(x)
-    return x
+    return vectorization_for_str(x)
 
 
 # s = 100
+# l = {}
 # a = "adams For example, annex 38 regulates the requirements pertaining to wastewater from textile manufacturing and textile finishing plants."
 # g = processing_dataset(s)
 # h = processing_string(a)
