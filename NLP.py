@@ -37,7 +37,7 @@ def vectorization_for_str(x: str):
     f = [0] * len(l)
     for i in x.split():
         try:
-            f[l[i]] += 1
+            f[p.index(l[i])] += 1
         except KeyError:
             pass
     return f
@@ -58,6 +58,14 @@ def processing_dataset(raw_dataset_id: str, vector_size: int = 0):
     sorted_df = df.loc[:, df.sum().sort_values().index]
     column_names = sorted_df.columns.tolist()
     processed_data = sorted_df[column_names[0 - vector_size:]]
+    global l
+    l = {k: l[k] for k in l if l[k] in processed_data.columns.tolist()}
+    my_file = open("Slovar.txt", "w+")
+    w = ""
+    for a in l:
+        w+=f"{a}:{l[a]}\n"
+    my_file.write(w)
+    my_file.close()
 
     print("Сохранение датасета...")
     tags = ["preprocessed"]
@@ -84,12 +92,20 @@ def processing_string(x):
     x = remove_stopwords(x)
     x = lemmatizing(x)
     return vectorization_for_str(x)
-
+    
+def read_slovar():
+    with open("Slovar.txt") as f:
+        d = {}
+        for a in f.readlines():
+            a = a.split(":")
+            d[a[0]] = int(a[1])
+        return d
 
 # s = 100
 # l = {}
 # a = "adams For example, annex 38 regulates the requirements pertaining to wastewater from textile manufacturing and textile finishing plants."
 # g = processing_dataset(s)
+# p = h.columns.tolist()
 # h = processing_string(a)
 # print(h)
 # print(g)
