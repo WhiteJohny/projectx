@@ -77,7 +77,7 @@ def processing_dataset(raw_dataset_id: str, vector_size: int = 0):
         dataset_tags=tags
     )
     processed_data.to_csv("dataset.csv")
-    processed_dataset.add_files("dataset.csv")
+    processed_dataset.add_files("dataset.csv", "Slovar.txt")
     processed_dataset.upload()
     processed_dataset.finalize()
     os.remove("dataset.csv")
