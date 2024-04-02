@@ -100,6 +100,8 @@ class CustomNN:
 
     def train(self, training_data, iterations=1000, learning_rate=0.1, batch_size=10, seed=None, testing_data=None, logger=None):
         training_data = training_data.to_numpy()
+        if testing_data is not None:
+            testing_data = testing_data.to_numpy()
         if seed is not None:
             np.random.seed(seed)
         for iteration in range(iterations):
@@ -125,18 +127,17 @@ class CustomNN:
                     self.layers[i].weights -= gradient_w_sum[i] * step_size
             mean_cost /= len(training_data)
             if testing_data is None:
-                if logger is None:
-                    print(f"[{time.strftime('%H:%M:%S')}] Итерация {iteration} выполнена, средняя ошибка: {mean_cost})")
-                else:
+                print(f"[{time.strftime('%H:%M:%S')}] Итерация {iteration} выполнена, средняя ошибка: {mean_cost})")
+                if logger is not None:
                     logger.report_scalar("Loss", "Train", iteration=iteration, value=mean_cost)
             else:
                 # тестируем и вычисляем среднюю ошибку
                 test_mean_cost = 0
-                for x, target in testing_data:
+                for row in testing_data:
+                    x, target = row[1:], row[0:1]
                     test_mean_cost += self.__cost(self.eval(x), target)
                 test_mean_cost /= len(testing_data)
-                if logger is None:
-                    print(f"[{time.strftime('%H:%M:%S')}] Итерация {iteration} выполнена, средняя ошибка: {mean_cost}, средняя ошибка тестов: {test_mean_cost}")
-                else:
+                print(f"[{time.strftime('%H:%M:%S')}] Итерация {iteration} выполнена, средняя ошибка: {mean_cost}, средняя ошибка тестов: {test_mean_cost}")
+                if logger is not None:
                     logger.report_scalar("Loss", "Train", iteration=iteration, value=mean_cost)
                     logger.report_scalar("Loss", "Test", iteration=iteration, value=test_mean_cost)
