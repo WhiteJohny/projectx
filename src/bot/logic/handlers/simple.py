@@ -5,6 +5,7 @@ from src.parser.parsers.ready.rt_parser import rt_one_parser, rt_many_parser
 from src.parser.parsers.ready.nn_parser import nn_one_parser, nn_many_parser
 from src.parser.parsers.ready.nyp_parser import nyp_one_parser, nyp_many_parser
 
+from src.bot.logic.utils.handlers_helper import search_one
 
 from src.bot.logic.views import garbage_msg, start_msg, help_msg, news_command_message
 
@@ -24,8 +25,7 @@ async def fox_search_many_handler(message: Message, state: FSMContext):
 
 
 async def fox_search_one_handler(message: Message, state: FSMContext):
-    await state.clear()
-    return await message.answer(text=fox_one_parser(message.text))
+    return await search_one(parser=fox_one_parser, message=message, state=state)
 """
 
 
@@ -35,8 +35,7 @@ async def rt_search_many_handler(message: Message, state: FSMContext):
 
 
 async def rt_search_one_handler(message: Message, state: FSMContext):
-    await state.clear()
-    return await message.answer(text=rt_one_parser(message.text))
+    return await search_one(parser=rt_one_parser, message=message, state=state)
 
 
 async def nn_search_many_handler(message: Message, state: FSMContext):
@@ -45,8 +44,7 @@ async def nn_search_many_handler(message: Message, state: FSMContext):
 
 
 async def nn_search_one_handler(message: Message, state: FSMContext):
-    await state.clear()
-    return await message.answer(text=nn_one_parser(message.text))
+    return await search_one(parser=nn_one_parser, message=message, state=state)
 
 
 async def nyp_search_many_handler(message: Message, state: FSMContext):
@@ -55,8 +53,7 @@ async def nyp_search_many_handler(message: Message, state: FSMContext):
 
 
 async def nyp_search_one_handler(message: Message, state: FSMContext):
-    await state.clear()
-    return await message.answer(text=nyp_one_parser(message.text))
+    return await search_one(parser=nyp_one_parser, message=message, state=state)
 
 
 async def garbage_handler(message: Message):

@@ -14,3 +14,7 @@ class News(StatesGroup):
     choosing_rt_many = State()
     choosing_nn_many = State()
     choosing_nyp_many = State()
+
+    choosing_callback = State()
+
+    stop = State()

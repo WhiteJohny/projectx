@@ -9,7 +9,8 @@ from src.bot.logic.handlers.simple import start_command, help_command, garbage_h
     rt_search_many_handler, rt_search_one_handler, nn_search_many_handler, nn_search_one_handler,\
     nyp_search_many_handler, nyp_search_one_handler
 
-from src.bot.logic.handlers.events import bot_start, bot_stop, mode_choosing, news_choosing_one, news_choosing_many
+from src.bot.logic.handlers.events import bot_start, stop_command, mode_choosing, news_choosing_one, news_choosing_many,\
+    callback_choosing, model_check, bot_stop
 
 from src.bot.logic.settings import bot
 from src.bot.logic.fsm import News
@@ -24,6 +25,7 @@ async def start():
     dp.message.register(start_command, Command(commands='start'))
     dp.message.register(help_command, Command(commands='help'))
     dp.message.register(news_command, Command(commands='news'))
+    dp.message.register(stop_command, Command(commands='stop'))
 
     dp.message.register(rt_search_many_handler, F.text, StateFilter(News.choosing_rt_many))
     dp.message.register(rt_search_one_handler, F.text, StateFilter(News.choosing_rt_one))
@@ -36,6 +38,8 @@ async def start():
     dp.callback_query.register(mode_choosing, F.data.startswith("mode_"), StateFilter(News.choosing_mode))
     dp.callback_query.register(news_choosing_many, F.data.startswith("news_"), StateFilter(News.choosing_mode_many))
     dp.callback_query.register(news_choosing_one, F.data.startswith("news_"), StateFilter(News.choosing_mode_one))
+    dp.callback_query.register(callback_choosing, F.data.startswith("callback_"), StateFilter(News.choosing_callback))
+    dp.callback_query.register(model_check, F.data.startswith("valid_"))
 
     try:
         await bot(DeleteWebhook(drop_pending_updates=True))

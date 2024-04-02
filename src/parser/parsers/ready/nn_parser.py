@@ -71,6 +71,3 @@ def nn_many_parser(search: str) -> str:
         news_list.append(f'{news_title}\n{text}')
 
     return model_imitation(news_list)
-
-
-print(links_parser("<AsyncMock id='2019259780640'>"))

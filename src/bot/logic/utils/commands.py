@@ -1,5 +1,7 @@
 from aiogram import Bot
-from aiogram.types import BotCommand, BotCommandScopeDefault
+from aiogram.types import BotCommand, BotCommandScopeDefault, BotCommandScopeChat
+
+from src.bot.logic.settings import Secrets
 
 
 async def set_commands(bot: Bot):
@@ -17,5 +19,13 @@ async def set_commands(bot: Bot):
             description='Выбор новостного сайта'
         ),
     ]
+    bot_admin_commands = [
+        BotCommand(
+            command='stop',
+            description='Прекращение работы бота'
+        )
+    ]
+    bot_admin_commands.extend(bot_commands)
 
     await bot.set_my_commands(bot_commands, BotCommandScopeDefault())
+    await bot.set_my_commands(bot_admin_commands, BotCommandScopeChat(chat_id=Secrets.admin_id))
