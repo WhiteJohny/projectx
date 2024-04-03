@@ -14,19 +14,25 @@ class CustomNN:
         if random_seed is not None:
             np.random.seed(random_seed)
         self.layers = []
-        self.layers.append(self.__Layer(
-            weights=np.random.randn(hidden_size, input_size),
-            biases=np.zeros(hidden_size)
-        ))
-        for i in range(hidden_count - 1):
+        if hidden_count > 0:
             self.layers.append(self.__Layer(
-                weights=np.random.randn(hidden_size, hidden_size),
+                weights=np.random.randn(hidden_size, input_size),
                 biases=np.zeros(hidden_size)
             ))
-        self.layers.append(self.__Layer(
-            weights=np.random.randn(output_size, hidden_size),
-            biases=np.zeros(output_size)
-        ))
+            for i in range(hidden_count - 1):
+                self.layers.append(self.__Layer(
+                    weights=np.random.randn(hidden_size, hidden_size),
+                    biases=np.zeros(hidden_size)
+                ))
+            self.layers.append(self.__Layer(
+                weights=np.random.randn(output_size, hidden_size),
+                biases=np.zeros(output_size)
+            ))
+        else:
+            self.layers.append(self.__Layer(
+                weights=np.random.randn(output_size, input_size),
+                biases=np.zeros(output_size)
+            ))
 
     @staticmethod
     def from_file(filepath: str):
@@ -103,7 +109,7 @@ class CustomNN:
             testing_data = testing_data.to_numpy()
         if seed is not None:
             np.random.seed(seed)
-        for iteration in range(iterations):
+        for iteration in range(1, iterations + 1):
             mean_cost = 0
             # разбиваем данные на части
             np.random.shuffle(training_data)

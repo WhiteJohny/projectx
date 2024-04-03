@@ -38,7 +38,7 @@ def train_model(task, dataset, params):
         seed=params['Args/seed'],
         logger=task.get_logger()
     )
-    network.save_to_file("weights.json")
+    network.save_to_file("model.json")
     output_model = OutputModel(
         task=task,
         name=params['Models/output_model_name'],
@@ -47,7 +47,7 @@ def train_model(task, dataset, params):
         config_dict=config
     )
     output_model.update_weights(
-        weights_filename="weights.json",
+        weights_filename="model.json",
         auto_delete_file=True,
         async_enable=False
     )
