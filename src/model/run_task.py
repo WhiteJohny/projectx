@@ -11,7 +11,8 @@ def train_model(task, dataset, params):
     dataset_metadata = dataset.get_metadata()
     dataset_path = dataset.get_local_copy()
     data = pd.read_csv(dataset_path + "/dataset.csv")
-    labels = json.load(dataset_path + "/labels.json")
+    with open(dataset_path + "/labels.json", "r") as f:
+        labels = json.load(f)
     if 'Models/input_model_id' in params:
         input_model = InputModel(params['Models/input_model_id'])
         if input_model.labels != labels:
@@ -55,8 +56,7 @@ def run_task():
     task.mark_started()
     params = task.get_parameters()
     dataset = Dataset.get(dataset_id=params['Datasets/dataset_id'])
-    train_model(task, dataset, params)
-    task.close()
+    return task, dataset, params
 
 
 def new_task():
@@ -74,7 +74,7 @@ def new_task():
         }
     else:
         model_params = {
-            'Models/input_model_id':    input_model_id,
+            'Models/input_model_id': input_model_id
         }
         task.set_input_model(model_id=input_model_id)
     output_model_name = input("Введите название выходной модели: ")
@@ -89,14 +89,16 @@ def new_task():
     }
     params.update(model_params)
     task.set_parameters(params)
-    train_model(task, dataset, params)
-    task.close()
+    return task, dataset, params
 
 
 def main():
     inp = input("Введите 1, чтобы создать эксперимент, 2 - выполнить существующий эксперимент: ")
-    if inp == 1: new_task()
-    else: run_task()
+    if inp == "1": task, dataset, params = new_task()
+    elif inp == "2": task, dataset, params = run_task()
+    else: raise ValueError("Invalid input")
+    train_model(task, dataset, params)
+    task.close()
 
 
 if __name__ == "__main__":
