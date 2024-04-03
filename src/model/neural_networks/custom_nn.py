@@ -30,7 +30,8 @@ class CustomNN:
 
     @staticmethod
     def from_file(filepath: str):
-        layers = json.load(open(filepath, "r"))
+        with open(filepath, "r") as f:
+            layers = json.load(f)
         network = CustomNN.__new__(CustomNN)
         network.layers = [CustomNN.__Layer(
             weights=np.array(layer["weights"]),
@@ -39,13 +40,11 @@ class CustomNN:
         return network
 
     def save_to_file(self, filepath: str):
-        json.dump(
-            [{
+        with open(filepath, "w") as f:
+            json.dump([{
                 "weights": layer.weights.tolist(),
                 "biases": layer.biases.tolist()
-            } for layer in self.layers],
-            open(filepath, "w")
-        )
+            } for layer in self.layers], f)
 
     @staticmethod
     def __sigmoid(x):
