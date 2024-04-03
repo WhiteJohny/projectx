@@ -1,4 +1,5 @@
 import pandas as pd
+import json
 import string
 import re
 import nltk
@@ -24,23 +25,26 @@ def lemmatizing(text):
     w = nltk.WordNetLemmatizer()
     return " ".join([w.lemmatize(word) for word in text])
 
+
 def vectorization(text):
     cv = CountVectorizer()
     d = cv.fit_transform(text)
     d = d.toarray()
-    global l
-    l = list(cv.vocabulary_.keys())
-    l = dict((word, index) for index, word in enumerate(l))
+    global labels
+    labels = list(cv.vocabulary_.keys())
+    labels = dict((word, index) for index, word in enumerate(labels))
     return d
 
+
 def vectorization_for_str(x: str):
-    f = [0] * len(l)
+    f = [0] * len(labels)
     for i in x.split():
         try:
-            f[p.index(l[i])] += 1
+            f[labels[i]] += 1
         except KeyError:
             pass
     return f
+
 
 def processing_dataset(raw_dataset_id: str, vector_size: int = 0):
     print("Загрузка датасета для обработки...")
@@ -58,17 +62,13 @@ def processing_dataset(raw_dataset_id: str, vector_size: int = 0):
     sorted_df = df.loc[:, df.sum().sort_values().index]
     column_names = sorted_df.columns.tolist()
     processed_data = sorted_df[column_names[0 - vector_size:]]
-    global l
-    l = {k: l[k] for k in l if l[k] in processed_data.columns.tolist()}
-    my_file = open("Slovar.txt", "w+")
-    w = ""
-    for a in l:
-        w+=f"{a}:{l[a]}\n"
-    my_file.write(w)
-    my_file.close()
+    global labels
+    labels = {k: labels[k] for k in labels if labels[k] in processed_data.columns.tolist()}
+    with open("labels.json", "w") as f:
+        json.dump(labels, f)
 
     print("Сохранение датасета...")
-    tags = ["preprocessed"]
+    tags = ["labeled", "preprocessed"]
     if vector_size > 0: tags.append("reduced")
     processed_dataset = Dataset.create(
         dataset_name=raw_dataset.name,
@@ -76,11 +76,17 @@ def processing_dataset(raw_dataset_id: str, vector_size: int = 0):
         parent_datasets=[raw_dataset],
         dataset_tags=tags
     )
+    processed_dataset.set_metadata({
+        'input_size': vector_size,
+        'output_size': 1,
+    })
     processed_data.to_csv("dataset.csv")
-    processed_dataset.add_files("dataset.csv", "Slovar.txt")
+    processed_dataset.add_files("dataset.csv")
+    processed_dataset.add_files("labels.json")
     processed_dataset.upload()
     processed_dataset.finalize()
     os.remove("dataset.csv")
+    os.remove("labels.json")
 
     print("Готово")
     return processed_data
@@ -92,14 +98,13 @@ def processing_string(x):
     x = remove_stopwords(x)
     x = lemmatizing(x)
     return vectorization_for_str(x)
-    
-def read_slovar():
-    with open("Slovar.txt") as f:
-        d = {}
-        for a in f.readlines():
-            a = a.split(":")
-            d[a[0]] = int(a[1])
-        return d
+
+
+def load_labels():
+    with open("labels.json", "r") as f:
+        global labels
+        labels = json.load(f)
+
 
 # s = 100
 # l = {}
