@@ -3,7 +3,7 @@ import os
 import warnings
 import pandas as pd
 from clearml import Task, InputModel, OutputModel, Dataset
-from neural_networks import CustomNN
+from .neural_networks import CustomNN
 
 
 PROJECT_NAME = "ProjectX"
