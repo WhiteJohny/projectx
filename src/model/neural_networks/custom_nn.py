@@ -1,6 +1,8 @@
 import json
-import numpy as np
 import time
+import clearml
+import pandas as pd
+import numpy as np
 from dataclasses import dataclass
 
 
@@ -103,7 +105,15 @@ class CustomNN:
         gradient_w.reverse()
         return gradient_b, gradient_w, cost
 
-    def train(self, training_data, iterations=1000, learning_rate=0.1, batch_size=10, seed=None, testing_data=None, logger=None):
+    def train(self,
+              training_data: pd.DataFrame,
+              iterations: int = 1000,
+              learning_rate: float = 0.1,
+              batch_size: int = 10,
+              seed: int = None,
+              testing_data: pd.DataFrame = None,
+              logger: clearml.Logger = None
+              ):
         training_data = training_data.to_numpy()
         if testing_data is not None:
             testing_data = testing_data.to_numpy()
@@ -114,7 +124,7 @@ class CustomNN:
             # разбиваем данные на части
             np.random.shuffle(training_data)
             for j in range(0, len(training_data), batch_size):
-                batch = training_data[j:j+batch_size]
+                batch = training_data[j:j + batch_size]
                 # вычисляем средний градиент для каждой части
                 gradient_b_sum = [np.zeros(layer.biases.shape) for layer in self.layers]
                 gradient_w_sum = [np.zeros(layer.weights.shape) for layer in self.layers]
