@@ -7,7 +7,7 @@ from src.parser.parsers.ready.chinadaily_parser import chinadaily_one_parser
 
 
 @pytest.mark.asyncio
-async def test_nyp_search_one_handler():
+async def test_chinadaily_search_one_handler():
     state = AsyncMock()
     message = AsyncMock()
     await chinadaily_search_one_handler(message, state)
