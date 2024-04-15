@@ -2,7 +2,7 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
 from src.parser.parsers.ready.rt_parser import rt_one_parser, rt_many_parser
-from src.parser.parsers.ready.nn_parser import nn_one_parser, nn_many_parser
+from src.parser.parsers.ready.chinadaily_parser import chinadaily_one_parser, chinadaily_many_parser
 from src.parser.parsers.ready.nyp_parser import nyp_one_parser, nyp_many_parser
 
 from src.bot.logic.utils.handlers_helper import search_one
@@ -28,6 +28,20 @@ async def fox_search_one_handler(message: Message, state: FSMContext):
     return await search_one(parser=fox_one_parser, message=message, state=state)
 """
 
+"""
+NN
+from src.parser.parsers.ready.nn_parser import nn_one_parser, nn_many_parser
+
+
+async def nn_search_many_handler(message: Message, state: FSMContext):
+    await state.clear()
+    return await message.answer(text=nn_many_parser(message.text))
+
+
+async def nn_search_one_handler(message: Message, state: FSMContext):
+    return await search_one(parser=nn_one_parser, message=message, state=state)
+"""
+
 
 async def rt_search_many_handler(message: Message, state: FSMContext):
     await state.clear()
@@ -38,13 +52,13 @@ async def rt_search_one_handler(message: Message, state: FSMContext):
     return await search_one(parser=rt_one_parser, message=message, state=state)
 
 
-async def nn_search_many_handler(message: Message, state: FSMContext):
+async def chinadaily_search_many_handler(message: Message, state: FSMContext):
     await state.clear()
-    return await message.answer(text=nn_many_parser(message.text))
+    return await message.answer(text=chinadaily_many_parser(message.text))
 
 
-async def nn_search_one_handler(message: Message, state: FSMContext):
-    return await search_one(parser=nn_one_parser, message=message, state=state)
+async def chinadaily_search_one_handler(message: Message, state: FSMContext):
+    return await search_one(parser=chinadaily_one_parser, message=message, state=state)
 
 
 async def nyp_search_many_handler(message: Message, state: FSMContext):

@@ -18,7 +18,7 @@ async def bot_start():
     return await bot.send_message(chat_id=Secrets.admin_id, text=bot_start_msg())
 
 
-async def bot_stop(ans="Бот аварийно завершил свою работу"):
+async def bot_stop():
     with open(r"src/model/error_links.txt", "w") as f:
         for link in set(ERROR_LINKS):
             f.write(f'{link}\n')
@@ -56,8 +56,8 @@ async def news_choosing_one(callback: CallbackQuery, state: FSMContext):
 
     if news == 'rt':
         await state.set_state(News.choosing_rt_one)
-    elif news == 'nn':
-        await state.set_state(News.choosing_nn_one)
+    elif news == 'cd':
+        await state.set_state(News.choosing_chinadaily_one)
     else:
         await state.set_state(News.choosing_nyp_one)
 
@@ -71,8 +71,8 @@ async def news_choosing_many(callback: CallbackQuery, state: FSMContext):
 
     if news == 'rt':
         await state.set_state(News.choosing_rt_many)
-    elif news == 'nn':
-        await state.set_state(News.choosing_nn_many)
+    elif news == 'cd':
+        await state.set_state(News.choosing_chinadaily_many)
     else:
         await state.set_state(News.choosing_nyp_many)
 

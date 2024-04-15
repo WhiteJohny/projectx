@@ -23,8 +23,8 @@ news_choose = InlineKeyboardMarkup(inline_keyboard=[
     ],
     [
         InlineKeyboardButton(
-            text='Newsinlevels',
-            callback_data='news_nn'
+            text='ChinaDaily',
+            callback_data='news_cd'
         )
     ],
     [

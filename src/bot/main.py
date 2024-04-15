@@ -6,8 +6,8 @@ from aiogram.filters import Command, StateFilter
 from aiogram.methods import DeleteWebhook
 
 from src.bot.logic.handlers.simple import start_command, help_command, garbage_handler, news_command,\
-    rt_search_many_handler, rt_search_one_handler, nn_search_many_handler, nn_search_one_handler,\
-    nyp_search_many_handler, nyp_search_one_handler
+    rt_search_many_handler, rt_search_one_handler, nyp_search_many_handler, nyp_search_one_handler,\
+    chinadaily_search_many_handler, chinadaily_search_one_handler
 
 from src.bot.logic.handlers.events import bot_start, stop_command, mode_choosing, news_choosing_one, news_choosing_many,\
     callback_choosing, model_check, bot_stop
@@ -29,8 +29,8 @@ async def start():
 
     dp.message.register(rt_search_many_handler, F.text, StateFilter(News.choosing_rt_many))
     dp.message.register(rt_search_one_handler, F.text, StateFilter(News.choosing_rt_one))
-    dp.message.register(nn_search_many_handler, F.text, StateFilter(News.choosing_nn_many))
-    dp.message.register(nn_search_one_handler, F.text, StateFilter(News.choosing_nn_one))
+    dp.message.register(chinadaily_search_many_handler, F.text, StateFilter(News.choosing_chinadaily_many))
+    dp.message.register(chinadaily_search_one_handler, F.text, StateFilter(News.choosing_chinadaily_one))
     dp.message.register(nyp_search_many_handler, F.text, StateFilter(News.choosing_nyp_many))
     dp.message.register(nyp_search_one_handler, F.text, StateFilter(News.choosing_nyp_one))
     dp.message.register(garbage_handler)

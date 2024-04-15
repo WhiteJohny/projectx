@@ -37,7 +37,8 @@ class Model:
             model = clearml.Model(model_id)
         elif model_name is not None:
             model = clearml.Model.query_models(project_name=PROJECT_NAME, model_name=model_name, max_results=1)[0]
-        else: raise ValueError("model name or id must be specified")
+        else:
+            raise ValueError("model name or id must be specified")
         self.network = CustomNN.from_file(model.get_weights())
         self.labels = model.labels
 
