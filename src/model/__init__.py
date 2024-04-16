@@ -1,1 +1,1 @@
-from .model import *
+from .model_helper import get_news_sentiment_one, get_news_sentiment_many

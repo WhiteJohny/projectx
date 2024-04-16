@@ -9,6 +9,7 @@ PROJECT_NAME = "ProjectX"
 MIN_RECOGNIZED_WORDS = 10
 
 
+# TODO: заменить имитацию модели на саму модель везде, где используется
 def model_imitation(news_list):
     if not news_list or news_list == [None, None]:
         return "Новостей по такому ключевому слову(ам) нет"
@@ -34,13 +35,16 @@ class Model:
         :param model_name: Model name to query. The latest model with this name will be used
         """
         if model_id is not None:
+            print(f"Загрузка модели {model_id}...")
             model = clearml.Model(model_id)
         elif model_name is not None:
+            print(f"Загрузка модели {model_name}...")
             model = clearml.Model.query_models(project_name=PROJECT_NAME, model_name=model_name, max_results=1)[0]
         else:
             raise ValueError("model name or id must be specified")
         self.network = CustomNN.from_file(model.get_weights())
         self.labels = model.labels
+        print(f"Модель {model.name} загружена (ID: {model.id})")
 
     def get_news_sentiment(self, news_text: str) -> float:
         """
