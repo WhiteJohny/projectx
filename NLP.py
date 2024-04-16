@@ -40,7 +40,7 @@ def vectorization_for_str(x: str):
     f = [0] * len(labels)
     for i in x.split():
         try:
-            f[labels[i]] += 1
+            f[l[i]] += 1
         except KeyError:
             pass
     return f
@@ -64,6 +64,10 @@ def processing_dataset(raw_dataset_id: str, vector_size: int = 0):
     processed_data = sorted_df[column_names[0 - vector_size:]]
     global labels
     labels = {k: labels[k] for k in labels if labels[k] in processed_data.columns.tolist()}
+    b = 0
+    for i in l:
+        l[i] = b
+        b += 1
     with open("labels.json", "w") as f:
         json.dump(labels, f)
 
