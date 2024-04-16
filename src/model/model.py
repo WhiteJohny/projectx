@@ -1,7 +1,7 @@
 import warnings
 import clearml
-from .neural_networks import CustomNN
-from .nlp import processing_string
+from src.model.neural_networks import CustomNN
+from src.model.nlp import processing_string
 from random import randint
 
 
@@ -37,7 +37,8 @@ class Model:
             model = clearml.Model(model_id)
         elif model_name is not None:
             model = clearml.Model.query_models(project_name=PROJECT_NAME, model_name=model_name, max_results=1)[0]
-        else: raise ValueError("model name or id must be specified")
+        else:
+            raise ValueError("model name or id must be specified")
         self.network = CustomNN.from_file(model.get_weights())
         self.labels = model.labels
 

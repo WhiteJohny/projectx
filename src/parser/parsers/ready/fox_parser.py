@@ -109,7 +109,7 @@ def fox_result(url):
         for p in paywall.findAll('p'):
             text += p.text + '\n'
 
-        return news_title, text
+        return [news_title, text]
     except AttributeError:
         return None
 

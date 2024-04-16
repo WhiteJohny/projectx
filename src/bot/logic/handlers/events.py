@@ -3,22 +3,24 @@ import sys
 from aiogram.types import CallbackQuery, Message, FSInputFile
 from aiogram.fsm.context import FSMContext
 
-from src.bot.logic.utils.commands import set_commands
+from src.bot.logic.utils import commands, queue
 from src.bot.logic.settings import bot
 from src.bot.logic.views import bot_start_msg, bot_stop_msg
 from src.bot.logic.settings import Secrets
-from src.bot.logic.keyboards import news_choose, news_validation
+from src.bot.logic.keyboards import news_choose, news_validation, news_check
 from src.bot.logic.fsm import News
 
+
 ERROR_LINKS = []
+LINKS_QUEUE = queue.LinksQueue()
 
 
 async def bot_start():
-    await set_commands(bot)
+    await commands.set_commands(bot)
     return await bot.send_message(chat_id=Secrets.admin_id, text=bot_start_msg())
 
 
-async def bot_stop(ans="Бот аварийно завершил свою работу"):
+async def bot_stop():
     with open(r"src/model/error_links.txt", "w") as f:
         for link in set(ERROR_LINKS):
             f.write(f'{link}\n')
@@ -56,8 +58,8 @@ async def news_choosing_one(callback: CallbackQuery, state: FSMContext):
 
     if news == 'rt':
         await state.set_state(News.choosing_rt_one)
-    elif news == 'nn':
-        await state.set_state(News.choosing_nn_one)
+    elif news == 'cd':
+        await state.set_state(News.choosing_chinadaily_one)
     else:
         await state.set_state(News.choosing_nyp_one)
 
@@ -71,8 +73,8 @@ async def news_choosing_many(callback: CallbackQuery, state: FSMContext):
 
     if news == 'rt':
         await state.set_state(News.choosing_rt_many)
-    elif news == 'nn':
-        await state.set_state(News.choosing_nn_many)
+    elif news == 'cd':
+        await state.set_state(News.choosing_chinadaily_many)
     else:
         await state.set_state(News.choosing_nyp_many)
 
@@ -87,7 +89,7 @@ async def callback_choosing(callback: CallbackQuery, state: FSMContext):
     if cb == 'no':
         ans = "❌"
         msg_to_admin = f'{callback.message.text}\n{callback.message.reply_to_message.text}'
-        await bot.send_message(chat_id=Secrets.admin_id, text=msg_to_admin, reply_markup=news_validation)
+        LINKS_QUEUE.insert(msg_to_admin)
 
     return await callback.message.edit_text(text=f'{callback.message.text}\n{ans}')
 
@@ -97,8 +99,22 @@ async def model_check(callback: CallbackQuery):
     ans = "Модель дала верный ответ 😌"
     link = callback.message.text.split("\n")[1]
 
-    if cb == "error":
-        ans = "Отправлено на дообучение модели ✅"
-        ERROR_LINKS.append(link)
+    if link == LINKS_QUEUE.peek().split("\n")[1]:
+        if cb == "error":
+            ans = "Отправлено на дообучение модели ✅"
+            ERROR_LINKS.append(link)
 
-    return await callback.message.edit_text(text=f'{ans}\n{link}')
+        LINKS_QUEUE.pop()
+
+    return await callback.message.edit_text(text=f'{ans}\n{link}', reply_markup=news_check)
+
+
+async def news_next(callback: CallbackQuery):
+    text = LINKS_QUEUE.peek()
+
+    await callback.message.edit_text(text=callback.message.text)
+
+    if text is None:
+        return await callback.message.answer(text="На данный момент необработанных новостей нет")
+
+    return await callback.message.answer(text=text, reply_markup=news_validation)

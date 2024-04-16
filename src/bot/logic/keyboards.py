@@ -23,8 +23,8 @@ news_choose = InlineKeyboardMarkup(inline_keyboard=[
     ],
     [
         InlineKeyboardButton(
-            text='Newsinlevels',
-            callback_data='news_nn'
+            text='ChinaDaily',
+            callback_data='news_cd'
         )
     ],
     [
@@ -57,6 +57,15 @@ news_validation = InlineKeyboardMarkup(inline_keyboard=[
         InlineKeyboardButton(
             text='Модель верна',
             callback_data='valid_pass'
+        )
+    ]
+])
+
+news_check = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(
+            text='Next',
+            callback_data='next'
         )
     ]
 ])

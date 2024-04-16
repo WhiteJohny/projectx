@@ -5,34 +5,31 @@ from bs4 import BeautifulSoup as bs
 from src.model.model import model_imitation
 
 
-def links_parser(search: str) -> list:  # возвращает список ссылок на 20 последних новостей, если дать поисковый запрос
+def links_parser(search: str) -> list[str] | list:  # возвращает список ссылок на 20 последних новостей, если дать поисковый запрос
     url = f"https://www.newsinlevels.com/?s={search}"
     links = []
 
-    try:
-        r = requests.get(url)
+    r = requests.get(url)
+    soup = bs(r.content, "html.parser")
+    articles = soup.findAll('div', class_="title")
+
+    for a in articles:
+        links.append(a.findNext('a').get('href'))
+
+    if links:
+        url2 = f"https://www.newsinlevels.com/page/2/?s={search}"
+
+        r = requests.get(url2)
         soup = bs(r.content, "html.parser")
         articles = soup.findAll('div', class_="title")
 
         for a in articles:
             links.append(a.findNext('a').get('href'))
 
-        if links:
-            url2 = f"https://www.newsinlevels.com/page/2/?s={search}"
-
-            r = requests.get(url2)
-            soup = bs(r.content, "html.parser")
-            articles = soup.findAll('div', class_="title")
-
-            for a in articles:
-                links.append(a.findNext('a').get('href'))
-    except Exception:
-        return []
-
     return links
 
 
-def text_parser(url: str) -> list[str, str]:  # возвращает заголовок и текс статьи, если дать ссылку на статью
+def text_parser(url: str) -> list[str, str] | list:  # возвращает заголовок и текс статьи, если дать ссылку на статью
     try:
         r = requests.get(url)
         soup = bs(r.content, "html.parser")

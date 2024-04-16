@@ -52,7 +52,10 @@ def processing_dataset(raw_dataset_id: str, vector_size: int = 0):
     column_names = sorted_df.columns.tolist()
     processed_data = sorted_df[column_names[0 - vector_size:]]
     labels = {k: labels[k] for k in labels if labels[k] in processed_data.columns.tolist()}
-
+    b = 0
+    for i in labels:
+        labels[i] = b
+        b += 1
     print("Сохранение датасета...")
     tags = ["labeled", "preprocessed"]
     if vector_size > 0: tags.append("reduced")
