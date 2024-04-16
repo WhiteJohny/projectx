@@ -94,6 +94,7 @@ def new_task():
         'Args/learning_rate':       float(input("\tСкорость обучения: ")),
         'Args/batch_size':          int(input("\tРазмер частей: ")),
         'Args/seed':                int(input("\tСемя: ")),
+        'Datasets/dataset_id':      dataset_id,
         'Models/output_model_name': output_model_name
     }
     params.update(model_params)
