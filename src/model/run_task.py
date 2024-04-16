@@ -4,6 +4,7 @@ import warnings
 import pandas as pd
 from clearml import Task, InputModel, OutputModel, Dataset
 from src.model.neural_networks import CustomNN
+from src.model.nlp import processing_dataset
 
 
 PROJECT_NAME = "ProjectX"
@@ -104,9 +105,17 @@ def new_task():
 
 
 def main():
-    inp = input("Введите 1, чтобы создать эксперимент, 2 - выполнить существующий эксперимент: ")
+    inp = input("""Меню
+\t1 - создать эксперимент
+\t2 - выполнить существующий эксперимент
+\t3 - обработать датасет
+Выберите пункт из меню: """)
     if inp == "1": new_task()
     elif inp == "2": run_task()
+    elif inp == "3": processing_dataset(
+        input("Введите ID необработанного датасета: "),
+        int(input("Введите размер, до которого обрезать вектора входных данных в датасете: "))
+    )
     else: raise ValueError("Invalid input")
 
 
