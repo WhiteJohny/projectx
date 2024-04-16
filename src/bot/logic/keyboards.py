@@ -60,3 +60,12 @@ news_validation = InlineKeyboardMarkup(inline_keyboard=[
         )
     ]
 ])
+
+news_check = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(
+            text='Next',
+            callback_data='next'
+        )
+    ]
+])

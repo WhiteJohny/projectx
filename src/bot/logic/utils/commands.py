@@ -23,6 +23,10 @@ async def set_commands(bot: Bot):
         BotCommand(
             command='stop',
             description='Прекращение работы бота'
+        ),
+        BotCommand(
+            command='show',
+            description='Взять новость в обработку'
         )
     ]
     bot_admin_commands.extend(bot_commands)

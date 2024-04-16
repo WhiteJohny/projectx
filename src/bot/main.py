@@ -7,10 +7,10 @@ from aiogram.methods import DeleteWebhook
 
 from src.bot.logic.handlers.simple import start_command, help_command, garbage_handler, news_command,\
     rt_search_many_handler, rt_search_one_handler, nyp_search_many_handler, nyp_search_one_handler,\
-    chinadaily_search_many_handler, chinadaily_search_one_handler
+    chinadaily_search_many_handler, chinadaily_search_one_handler, show_command
 
 from src.bot.logic.handlers.events import bot_start, stop_command, mode_choosing, news_choosing_one, news_choosing_many,\
-    callback_choosing, model_check, bot_stop
+    callback_choosing, model_check, bot_stop, news_next
 
 from src.bot.logic.settings import bot
 from src.bot.logic.fsm import News
@@ -26,6 +26,7 @@ async def start():
     dp.message.register(help_command, Command(commands='help'))
     dp.message.register(news_command, Command(commands='news'))
     dp.message.register(stop_command, Command(commands='stop'))
+    dp.message.register(show_command, Command(commands='show'))
 
     dp.message.register(rt_search_many_handler, F.text, StateFilter(News.choosing_rt_many))
     dp.message.register(rt_search_one_handler, F.text, StateFilter(News.choosing_rt_one))
@@ -40,6 +41,7 @@ async def start():
     dp.callback_query.register(news_choosing_one, F.data.startswith("news_"), StateFilter(News.choosing_mode_one))
     dp.callback_query.register(callback_choosing, F.data.startswith("callback_"), StateFilter(News.choosing_callback))
     dp.callback_query.register(model_check, F.data.startswith("valid_"))
+    dp.callback_query.register(news_next, F.data == "next")
 
     try:
         await bot(DeleteWebhook(drop_pending_updates=True))

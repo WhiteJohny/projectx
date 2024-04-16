@@ -6,12 +6,10 @@ from src.parser.parsers.ready.chinadaily_parser import chinadaily_one_parser, ch
 from src.parser.parsers.ready.nyp_parser import nyp_one_parser, nyp_many_parser
 
 from src.bot.logic.utils.handlers_helper import search_one
-
 from src.bot.logic.views import garbage_msg, start_msg, help_msg, news_command_message
-
-from src.bot.logic.keyboards import mode_choose
-
+from src.bot.logic.keyboards import mode_choose, news_validation
 from src.bot.logic.fsm import News
+from src.bot.logic.handlers.events import LINKS_QUEUE
 
 
 """
@@ -85,3 +83,12 @@ async def news_command(message: Message, state: FSMContext):
 
 async def help_command(message: Message):
     return await message.answer(help_msg())
+
+
+async def show_command(message: Message):
+    text = LINKS_QUEUE.peek()
+
+    if text is None:
+        return await message.answer(text="На данный момент необработанных новостей нет")
+
+    return await message.answer(text=text, reply_markup=news_validation)

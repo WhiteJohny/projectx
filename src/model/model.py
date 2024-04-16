@@ -1,7 +1,7 @@
 import warnings
 import clearml
-from .neural_networks import CustomNN
-from .nlp import processing_string
+from src.model.neural_networks import CustomNN
+from src.model.nlp import processing_string
 from random import randint
 
 
