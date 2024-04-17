@@ -32,7 +32,7 @@ def vectorization(text):
     d = d.toarray()
     global labels
     labels = list(cv.vocabulary_.keys())
-    labels = dict((word, index) for index, word in enumerate(labels))
+    labels = dict((index, word) for index, word in enumerate(labels))
     return d
 
 
@@ -63,7 +63,8 @@ def processing_dataset(raw_dataset_id: str, vector_size: int = 0):
     column_names = sorted_df.columns.tolist()
     processed_data = sorted_df[column_names[0 - vector_size:]]
     global labels
-    labels = {k: labels[k] for k in labels if labels[k] in processed_data.columns.tolist()}
+    labels = {k: labels[k] for k in processed_data.columns.tolist()}
+    labels = {labels[k] : k for k in labels}
     b = 0
     for i in l:
         l[i] = b
