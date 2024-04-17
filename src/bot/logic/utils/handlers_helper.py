@@ -6,9 +6,7 @@ from src.bot.logic.fsm import News
 from src.bot.logic.keyboards import callback_choose
 
 
-async def search_one(parser, message: Message, state: FSMContext):
-    text = parser(message.text)
-
+async def search_one(text, message: Message, state: FSMContext):
     if "Ваша ссылка недействительна" in text:
         await state.clear()
         return await message.answer(text=text)

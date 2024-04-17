@@ -2,29 +2,11 @@ import warnings
 import clearml
 from src.model.neural_networks import CustomNN
 from src.model.nlp import processing_string
-from random import randint
 
 
 PROJECT_NAME = "ProjectX"
+MODEL_NAME = "News Sentiment Model"
 MIN_RECOGNIZED_WORDS = 10
-
-
-# TODO: заменить имитацию модели на саму модель везде, где используется
-def model_imitation(news_list):
-    if not news_list or news_list == [None, None]:
-        return "Новостей по такому ключевому слову(ам) нет"
-
-    good_mood = counter = 0
-
-    for news in news_list:
-        if news is None:
-            continue
-
-        counter += 1
-        if randint(0, 1):
-            good_mood += 1
-
-    return f'{round((good_mood / (counter or 1)) * 100)}% позитивных новостей на данной неделе!'
 
 
 class Model:
@@ -57,3 +39,37 @@ class Model:
             warnings.warn("model could not recognize enough words in given text", RuntimeWarning)
             return 0.5
         return self.network.eval(processed_text)[0]
+
+
+model = None
+
+
+def model_init():
+    global model
+    model = Model(model_name=MODEL_NAME)
+
+
+def get_news_sentiment_one(text: str) -> str:
+    global model
+    if model is None: raise RuntimeError("model not initialized")
+    if text is None: return "Ваша ссылка недействительна"
+    sentiment = model.get_news_sentiment(text)
+    if sentiment <= 0.4: return "Это печальная новость("
+    if sentiment < 0.6: return "Не могу определить, хорошая или плохая новость :/"
+    return "Это позитивная новость!"
+
+
+def get_news_sentiment_many(texts: list[str]) -> str:
+    global model
+    if model is None: raise RuntimeError("model not initialized")
+    sentiments = [model.get_news_sentiment(text) for text in texts]
+
+    if sentiments:
+        good_sentiments = 0.0
+        for sentiment in sentiments:
+            if sentiment >= 0.6: good_sentiments += 1
+            elif sentiment > 0.4: good_sentiments += 0.5
+        percentage = round((good_sentiments / len(sentiments)) * 100)
+    else:
+        percentage = 0
+    return f"{percentage}% позитивных новостей!"
