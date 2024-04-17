@@ -11,6 +11,6 @@ def test_rt_one_parser():
                     "-ship-mechanical-error")
     invalid_url2 = "qwerty"
 
-    assert rt_one_parser(valid_url) is str
+    assert type(rt_one_parser(valid_url)) == str
     assert rt_one_parser(invalid_url1) is None
     assert rt_one_parser(invalid_url2) is None

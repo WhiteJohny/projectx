@@ -11,6 +11,6 @@ def test_chinadaily_one_parser():
                     "-ship-mechanical-error")
     invalid_url2 = "qwerty"
 
-    assert chinadaily_one_parser(valid_url) is str
+    assert type(chinadaily_one_parser(valid_url)) == str
     assert chinadaily_one_parser(invalid_url1) is None
     assert chinadaily_one_parser(invalid_url2) is None

@@ -11,6 +11,6 @@ def test_nyp_one_parser():
                     "-ship-mechanical-error")
     invalid_url2 = "qwerty"
 
-    assert nyp_one_parser(valid_url) is str
+    assert type(nyp_one_parser(valid_url)) == str
     assert nyp_one_parser(invalid_url1) is None
     assert nyp_one_parser(invalid_url2) is None
