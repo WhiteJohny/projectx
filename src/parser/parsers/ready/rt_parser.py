@@ -5,8 +5,6 @@ import requests
 from bs4 import BeautifulSoup as bs
 from datetime import timedelta, datetime
 
-from src.model.model import model_imitation
-
 
 def links_parser(search: str) -> list:  # возвращает список ссылок на 20 последних новостей, если дать поисковый запрос
     url = f"https://www.rt.com/search?q={search}&type=News"

@@ -1,3 +1,4 @@
+from __future__ import annotations
 import warnings
 import clearml
 from src.model.neural_networks import CustomNN

@@ -2,8 +2,6 @@ from __future__ import annotations
 import requests
 from bs4 import BeautifulSoup as bs
 
-from src.model.model import model_imitation
-
 
 def links_parser(search: str) -> list[str] | list:  # возвращает список ссылок на 20 последних новостей, если дать поисковый запрос
     url = f"https://nypost.com/?s={search}&sf=week"
