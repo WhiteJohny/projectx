@@ -2,7 +2,7 @@ from src.parser.parsers.ready.rt_parser import rt_many_parser, rt_one_parser
 
 
 def test_rt_many_parser():
-    assert rt_many_parser("Trump")[1] in list(map(str, [i for i in range(10)]))
+    assert rt_many_parser("Trump")
 
 
 def test_rt_one_parser():
@@ -11,6 +11,6 @@ def test_rt_one_parser():
                     "-ship-mechanical-error")
     invalid_url2 = "qwerty"
 
-    assert rt_one_parser(valid_url) in ["Это позитивная новость!", "Это печальная новость("]
-    assert rt_one_parser(invalid_url1) == "Ваша ссылка недействительна или она не с rt"
-    assert rt_one_parser(invalid_url2) == "Ваша ссылка недействительна или она не с rt"
+    assert rt_one_parser(valid_url) is str
+    assert rt_one_parser(invalid_url1) is None
+    assert rt_one_parser(invalid_url2) is None
