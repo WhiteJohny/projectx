@@ -15,8 +15,6 @@ from src.bot.logic.handlers.events import bot_start, stop_command, mode_choosing
 from src.bot.logic.settings import bot
 from src.bot.logic.fsm import News
 
-from src.model import model_init
-
 
 async def start():
     dp = Dispatcher()
@@ -53,5 +51,4 @@ async def start():
 
 
 if __name__ == '__main__':
-    model_init()
     asyncio.run(start())

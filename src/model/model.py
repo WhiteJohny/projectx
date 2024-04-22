@@ -42,16 +42,11 @@ class Model:
         return self.network.eval(processed_text)[0]
 
 
-model = None
-
-
-def model_init():
-    global model
-    model = Model(model_name=MODEL_NAME)
+# инициализация
+model = Model(model_name=MODEL_NAME)
 
 
 def get_news_sentiment_one(text: str) -> str:
-    global model
     if model is None: raise RuntimeError("model not initialized")
     if text is None: return "Ваша ссылка недействительна"
     sentiment = model.get_news_sentiment(text)
@@ -61,7 +56,6 @@ def get_news_sentiment_one(text: str) -> str:
 
 
 def get_news_sentiment_many(texts: list[str]) -> str:
-    global model
     if model is None: raise RuntimeError("model not initialized")
     sentiments = [model.get_news_sentiment(text) for text in texts]
 
