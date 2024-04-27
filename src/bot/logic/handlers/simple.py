@@ -5,14 +5,14 @@ from src.parser.parsers.ready.rt_parser import rt_one_parser, rt_many_parser
 from src.parser.parsers.ready.chinadaily_parser import chinadaily_one_parser, chinadaily_many_parser
 from src.parser.parsers.ready.nyp_parser import nyp_one_parser, nyp_many_parser
 
-from src.model import get_news_sentiment_one, get_news_sentiment_many
-
 from src.bot.logic.utils.handlers_helper import search_one
 from src.bot.logic.views import garbage_msg, start_msg, help_msg, news_command_message
 from src.bot.logic.keyboards import mode_choose, news_validation
 from src.bot.logic.fsm import News
 from src.bot.logic.handlers.events import LINKS_QUEUE
 
+from src.model import get_news_sentiment_one, get_news_sentiment_many, init_model
+init_model()
 
 """
 FOX

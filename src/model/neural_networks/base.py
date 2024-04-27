@@ -7,7 +7,7 @@ class BaseNetwork(ABC):
     @abstractmethod
     def train(self,
               training_data: pd.DataFrame,
-              iterations: int = 1000,
+              iterations: int = 100,
               learning_rate: float = 0.1,
               batch_size: int = 10,
               seed: int = None,
@@ -15,6 +15,8 @@ class BaseNetwork(ABC):
               logger: clearml.Logger = None
               ):
         pass
+
+    FILE_EXTENSION = ""
 
     @staticmethod
     @abstractmethod

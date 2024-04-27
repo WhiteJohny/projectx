@@ -47,7 +47,10 @@ class Model:
 
 
 # инициализация
-model = Model(model_name=MODEL_NAME)
+model = None
+def init_model():
+    global model
+    model = Model(model_name=MODEL_NAME)
 
 
 def get_news_sentiment_one(text: str) -> str:
