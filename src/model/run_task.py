@@ -3,7 +3,7 @@ import os
 import warnings
 import pandas as pd
 from clearml import Task, InputModel, OutputModel, Dataset
-from src.model.neural_networks import CustomNN
+from src.model.neural_networks import FRAMEWORKS
 from src.model.nlp import processing_dataset
 
 
@@ -23,10 +23,18 @@ def train_model(task, dataset, params):
         labels = input_model.labels
         config = input_model.config_dict
         config['input_model_id'] = params['Models/input_model_id']
-        network = CustomNN.from_file(input_model.get_weights())
+        try:
+            framework = FRAMEWORKS[input_model.framework]
+        except KeyError:
+            raise NotImplementedError(f"{input_model.framework} framework not implemented")
+        network = framework.from_file(input_model.get_weights())
     else:
         with open(dataset_path + "/labels.json", "r") as f:
             labels = json.load(f)
+        try:
+            framework = FRAMEWORKS[params['Models/framework']]
+        except KeyError:
+            raise NotImplementedError(f"{params['Models/framework']} framework not implemented")
         config = {
             'input_size':   int(dataset_metadata['input_size']),
             'output_size':  int(dataset_metadata['output_size']),
@@ -34,7 +42,7 @@ def train_model(task, dataset, params):
             'hidden_count': int(params['Models/hidden_layer_count']),
             'random_seed':  int(params['Models/seed'])
         }
-        network = CustomNN(**config)
+        network = framework(**config)
     network.train(
         training_data=data[10:],
         testing_data=data[:10],
@@ -77,8 +85,14 @@ def new_task():
     dataset = Dataset.get(dataset_id=dataset_id, alias="dataset_id")
     input_model_id = input("Введите ID входной модели (0 - создать новую): ")
     if input_model_id == "0":
+        print("Доступные фреймворки")
+        for frame in FRAMEWORKS: print("\t" + frame)
+        framework_name = input("Введите фреймворк модели: ")
+        if framework_name not in FRAMEWORKS:
+            raise ValueError("invalid framework")
         print("Введите параметры модели")
         model_params = {
+            'Models/framework':             framework_name,
             'Models/hidden_layer_size':     int(input("\tРазмер скрытых слоёв: ")),
             'Models/hidden_layer_count':    int(input("\tКол-во скрытых слоёв: ")),
             'Models/seed':                  int(input("\tСемя: "))

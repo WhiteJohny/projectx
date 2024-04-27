@@ -1,7 +1,7 @@
 from __future__ import annotations
 import warnings
 import clearml
-from src.model.neural_networks import CustomNN
+from src.model.neural_networks import *
 from src.model.nlp import processing_string
 
 
@@ -25,8 +25,12 @@ class Model:
             model = clearml.Model.query_models(project_name=PROJECT_NAME, model_name=model_name, max_results=1)[0]
         else:
             raise ValueError("model name or id must be specified")
-        self.network = CustomNN.from_file(model.get_weights())
         self.labels = model.labels
+        try:
+            framework = FRAMEWORKS[model.framework]
+            self.network = framework.from_file(model.get_weights())
+        except KeyError:
+            raise NotImplementedError(f"{model.framework} framework not implemented")
         print(f"Модель {model.name} загружена (ID: {model.id})")
 
     def get_news_sentiment(self, news_text: str) -> float:

@@ -4,9 +4,10 @@ import clearml
 import pandas as pd
 import numpy as np
 from dataclasses import dataclass
+from base import BaseNetwork
 
 
-class CustomNN:
+class CustomNN(BaseNetwork):
     @dataclass
     class __Layer:
         weights: any
