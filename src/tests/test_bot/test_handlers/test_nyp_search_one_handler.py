@@ -2,7 +2,8 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from src.bot.logic.handlers.simple import nyp_search_one_handler, get_news_sentiment_one
+from src.model import get_news_sentiment_one
+from src.bot.logic.handlers.simple import nyp_search_one_handler
 from src.parser.parsers.ready.nyp_parser import nyp_one_parser
 
 
