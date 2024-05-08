@@ -53,12 +53,12 @@ def processing_dataset(raw_dataset_id: str, vector_size: int = 0):
 
     print("Обработка датасета...")
     data = data.drop(["news_title", "reddit_title", "url"], axis=1)
-    data["text"] = data['text'].apply(lambda x: remove_punctuations(x))
-    data["text"] = data['text'].apply(lambda x: tokenise(x.lower()))
-    data["text"] = data['text'].apply(lambda x: remove_stopwords(x))
-    data["text"] = data['text'].apply(lambda x: lemmatizing(x))
-    d = vectorization(data["text"])
-    df = pd.DataFrame(d, data['sentiment'])
+    data["Sentence"] = data['Sentence'].apply(lambda x: remove_punctuations(x))
+    data["Sentence"] = data['Sentence'].apply(lambda x: tokenise(x.lower()))
+    data["Sentence"] = data['Sentence'].apply(lambda x: remove_stopwords(x))
+    data["Sentence"] = data['Sentence'].apply(lambda x: lemmatizing(x))
+    d = vectorization(data["Sentence"])
+    df = pd.DataFrame(d, data['Sentiment'])
     sorted_df = df.loc[:, df.sum().sort_values().index]
     column_names = sorted_df.columns.tolist()
     processed_data = sorted_df[column_names[0 - vector_size:]]
