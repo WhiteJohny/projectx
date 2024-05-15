@@ -46,8 +46,9 @@ class Model:
         return self.network.eval(processed_text)[0]
 
 
-# инициализация
-model = None
+model: Model | None = None
+
+
 def init_model():
     global model
     model = Model(model_name=MODEL_NAME)
