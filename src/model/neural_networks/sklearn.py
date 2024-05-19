@@ -21,7 +21,7 @@ class SKLearn(BaseNetwork):
 
     @staticmethod
     def from_file(filepath: str):
-        skl = MLPRegressor.__new__(MLPRegressor)
+        skl = SKLearn.__new__(SKLearn)
         skl.net = joblib.load(filepath)
         return skl
 
