@@ -52,6 +52,4 @@ async def start():
 
 
 if __name__ == '__main__':
-    nltk.download('stopwords')
-    nltk.download('wordnet')
     asyncio.run(start())

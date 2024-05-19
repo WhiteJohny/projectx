@@ -7,6 +7,8 @@ import nltk
 from sklearn.feature_extraction.text import CountVectorizer
 from clearml import Dataset
 import os
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 
 def remove_punctuations(text):
@@ -33,7 +35,13 @@ def processing_dataset(raw_dataset_id: str, vector_size: int = 0):
     data = pd.read_csv(raw_dataset.get_local_copy() + "/dataset.csv")
 
     print("Обработка датасета...")
-    data = data.drop(["news_title", "reddit_title", "url"], axis=1)
+    data["text"] = data["Sentence"]
+    data["sentiment"] = data["Sentiment"]
+    data = data.drop(["Sentence", "Sentiment"], axis=1)
+    s0 = data[data["sentiment"] == 0]
+    s1 = data[data["sentiment"] == 1]
+    le = 50000
+    data = pd.concat([s1[0 - le // 2:], s0[0 - le // 2:]])
     data["text"] = data['text'].apply(lambda x: remove_punctuations(x))
     data["text"] = data['text'].apply(lambda x: tokenise(x.lower()))
     data["text"] = data['text'].apply(lambda x: remove_stopwords(x))
