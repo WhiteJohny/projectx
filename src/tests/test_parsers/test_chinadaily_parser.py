@@ -2,7 +2,7 @@ from src.parser.parsers.ready.chinadaily_parser import chinadaily_many_parser, c
 
 
 def test_chinadaily_many_parser():
-    assert chinadaily_many_parser("Trump")[1] in list(map(str, [i for i in range(10)]))
+    assert chinadaily_many_parser("Trump")
 
 
 def test_chinadaily_one_parser():
@@ -11,6 +11,6 @@ def test_chinadaily_one_parser():
                     "-ship-mechanical-error")
     invalid_url2 = "qwerty"
 
-    assert chinadaily_one_parser(valid_url) in ["Это позитивная новость!", "Это печальная новость("]
-    assert chinadaily_one_parser(invalid_url1) == "Ваша ссылка недействительна или она не с chinadaily"
-    assert chinadaily_one_parser(invalid_url2) == "Ваша ссылка недействительна или она не с chinadaily"
+    assert type(chinadaily_one_parser(valid_url)) == str
+    assert chinadaily_one_parser(invalid_url1) is None
+    assert chinadaily_one_parser(invalid_url2) is None

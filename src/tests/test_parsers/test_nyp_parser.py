@@ -2,7 +2,7 @@ from src.parser.parsers.ready.nyp_parser import nyp_many_parser, nyp_one_parser
 
 
 def test_nyp_many_parser():
-    assert nyp_many_parser("Trump")[1] in list(map(str, [i for i in range(10)]))
+    assert nyp_many_parser("Trump")
 
 
 def test_nyp_one_parser():
@@ -11,6 +11,6 @@ def test_nyp_one_parser():
                     "-ship-mechanical-error")
     invalid_url2 = "qwerty"
 
-    assert nyp_one_parser(valid_url) in ["Это позитивная новость!", "Это печальная новость("]
-    assert nyp_one_parser(invalid_url1) == "Ваша ссылка недействительна или она не с nyp"
-    assert nyp_one_parser(invalid_url2) == "Ваша ссылка недействительна или она не с nyp"
+    assert type(nyp_one_parser(valid_url)) == str
+    assert nyp_one_parser(invalid_url1) is None
+    assert nyp_one_parser(invalid_url2) is None

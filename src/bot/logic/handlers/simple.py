@@ -11,6 +11,8 @@ from src.bot.logic.keyboards import mode_choose, news_validation
 from src.bot.logic.fsm import News
 from src.bot.logic.handlers.events import LINKS_QUEUE
 
+from src.model import get_news_sentiment_one, get_news_sentiment_many, init_model
+init_model()
 
 """
 FOX
@@ -43,29 +45,29 @@ async def nn_search_one_handler(message: Message, state: FSMContext):
 
 async def rt_search_many_handler(message: Message, state: FSMContext):
     await state.clear()
-    return await message.answer(text=rt_many_parser(message.text))
+    return await message.answer(text=get_news_sentiment_many(rt_many_parser(message.text)))
 
 
 async def rt_search_one_handler(message: Message, state: FSMContext):
-    return await search_one(parser=rt_one_parser, message=message, state=state)
+    return await search_one(text=get_news_sentiment_one(rt_one_parser(message.text)), message=message, state=state)
 
 
 async def chinadaily_search_many_handler(message: Message, state: FSMContext):
     await state.clear()
-    return await message.answer(text=chinadaily_many_parser(message.text))
+    return await message.answer(text=get_news_sentiment_many(chinadaily_many_parser(message.text)))
 
 
 async def chinadaily_search_one_handler(message: Message, state: FSMContext):
-    return await search_one(parser=chinadaily_one_parser, message=message, state=state)
+    return await search_one(text=get_news_sentiment_one(chinadaily_one_parser(message.text)), message=message, state=state)
 
 
 async def nyp_search_many_handler(message: Message, state: FSMContext):
     await state.clear()
-    return await message.answer(text=nyp_many_parser(message.text))
+    return await message.answer(text=get_news_sentiment_many(nyp_many_parser(message.text)))
 
 
 async def nyp_search_one_handler(message: Message, state: FSMContext):
-    return await search_one(parser=nyp_one_parser, message=message, state=state)
+    return await search_one(text=get_news_sentiment_one(nyp_one_parser(message.text)), message=message, state=state)
 
 
 async def garbage_handler(message: Message):

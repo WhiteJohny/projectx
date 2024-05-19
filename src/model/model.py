@@ -1,29 +1,13 @@
+from __future__ import annotations
 import warnings
 import clearml
-from src.model.neural_networks import CustomNN
+from src.model.neural_networks import *
 from src.model.nlp import processing_string
-from random import randint
 
 
 PROJECT_NAME = "ProjectX"
+MODEL_NAME = "News Sentiment Model"
 MIN_RECOGNIZED_WORDS = 10
-
-
-def model_imitation(news_list):
-    if not news_list or news_list == [None, None]:
-        return "Новостей по такому ключевому слову(ам) нет"
-
-    good_mood = counter = 0
-
-    for news in news_list:
-        if news is None:
-            continue
-
-        counter += 1
-        if randint(0, 1):
-            good_mood += 1
-
-    return f'{round((good_mood / (counter or 1)) * 100)}% позитивных новостей на данной неделе!'
 
 
 class Model:
@@ -34,13 +18,20 @@ class Model:
         :param model_name: Model name to query. The latest model with this name will be used
         """
         if model_id is not None:
+            print(f"Загрузка модели {model_id}...")
             model = clearml.Model(model_id)
         elif model_name is not None:
+            print(f"Загрузка модели {model_name}...")
             model = clearml.Model.query_models(project_name=PROJECT_NAME, model_name=model_name, max_results=1)[0]
         else:
             raise ValueError("model name or id must be specified")
-        self.network = CustomNN.from_file(model.get_weights())
         self.labels = model.labels
+        try:
+            framework = FRAMEWORKS[model.framework]
+            self.network = framework.from_file(model.get_weights())
+        except KeyError:
+            raise NotImplementedError(f"{model.framework} framework not implemented")
+        print(f"Модель {model.name} загружена (ID: {model.id})")
 
     def get_news_sentiment(self, news_text: str) -> float:
         """
@@ -53,3 +44,35 @@ class Model:
             warnings.warn("model could not recognize enough words in given text", RuntimeWarning)
             return 0.5
         return self.network.eval(processed_text)[0]
+
+
+model: Model | None = None
+
+
+def init_model():
+    global model
+    model = Model(model_name=MODEL_NAME)
+
+
+def get_news_sentiment_one(text: str) -> str:
+    if model is None: raise RuntimeError("model not initialized")
+    if text is None: return "Ваша ссылка недействительна"
+    sentiment = model.get_news_sentiment(text)
+    if sentiment <= 0.4: return "Это печальная новость("
+    if sentiment < 0.6: return "Не могу определить, хорошая или плохая новость :/"
+    return "Это позитивная новость!"
+
+
+def get_news_sentiment_many(texts: list[str]) -> str:
+    if model is None: raise RuntimeError("model not initialized")
+    sentiments = [model.get_news_sentiment(text) for text in texts]
+
+    if sentiments:
+        good_sentiments = 0.0
+        for sentiment in sentiments:
+            if sentiment >= 0.6: good_sentiments += 1
+            elif sentiment > 0.4: good_sentiments += 0.5
+        percentage = round((good_sentiments / len(sentiments)) * 100)
+    else:
+        percentage = 0
+    return f"{percentage}% позитивных новостей!"

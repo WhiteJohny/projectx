@@ -3,15 +3,17 @@ import os
 import warnings
 import pandas as pd
 from clearml import Task, InputModel, OutputModel, Dataset
-from src.model.neural_networks import CustomNN
+from sklearn.exceptions import DataConversionWarning
+from src.model.neural_networks import FRAMEWORKS
 from src.model.nlp import processing_dataset
 
 
 PROJECT_NAME = "ProjectX"
 
 
-# убирает предупреждения о больших числах в вычислениях от NumPy
+# убирает предупреждения
 warnings.filterwarnings("ignore", "overflow encountered in exp", RuntimeWarning)
+warnings.filterwarnings("ignore", "A column-vector y was passed when a 1d array was expected", DataConversionWarning)
 
 
 def train_model(task, dataset, params):
@@ -23,10 +25,20 @@ def train_model(task, dataset, params):
         labels = input_model.labels
         config = input_model.config_dict
         config['input_model_id'] = params['Models/input_model_id']
-        network = CustomNN.from_file(input_model.get_weights())
+        framework_name = input_model.framework
+        try:
+            framework = FRAMEWORKS[framework_name]
+        except KeyError:
+            raise NotImplementedError(f"{framework_name} framework not implemented")
+        network = framework.from_file(input_model.get_weights())
     else:
         with open(dataset_path + "/labels.json", "r") as f:
             labels = json.load(f)
+        framework_name = params['Models/framework']
+        try:
+            framework = FRAMEWORKS[framework_name]
+        except KeyError:
+            raise NotImplementedError(f"{framework_name} framework not implemented")
         config = {
             'input_size':   int(dataset_metadata['input_size']),
             'output_size':  int(dataset_metadata['output_size']),
@@ -34,7 +46,7 @@ def train_model(task, dataset, params):
             'hidden_count': int(params['Models/hidden_layer_count']),
             'random_seed':  int(params['Models/seed'])
         }
-        network = CustomNN(**config)
+        network = framework(**config)
     network.train(
         training_data=data[10:],
         testing_data=data[:10],
@@ -44,20 +56,21 @@ def train_model(task, dataset, params):
         seed=int(params['Args/seed']),
         logger=task.get_logger()
     )
-    network.save_to_file("model.json")
+    filename = "model" + framework.FILE_EXTENSION
+    network.save_to_file(filename)
     output_model = OutputModel(
         task=task,
         name=params['Models/output_model_name'],
-        framework="CustomNN",
+        framework=framework_name,
         label_enumeration=labels,
         config_dict=config
     )
     output_model.update_weights(
-        weights_filename="model.json",
+        weights_filename=filename,
         async_enable=False,
         upload_uri="https://files.clear.ml"
     )
-    os.remove("model.json")
+    os.remove(filename)
 
 
 def run_task():
@@ -77,8 +90,14 @@ def new_task():
     dataset = Dataset.get(dataset_id=dataset_id, alias="dataset_id")
     input_model_id = input("Введите ID входной модели (0 - создать новую): ")
     if input_model_id == "0":
+        print("Доступные фреймворки")
+        for frame in FRAMEWORKS: print("\t" + frame)
+        framework_name = input("Введите фреймворк модели: ")
+        if framework_name not in FRAMEWORKS:
+            raise ValueError("invalid framework")
         print("Введите параметры модели")
         model_params = {
+            'Models/framework':             framework_name,
             'Models/hidden_layer_size':     int(input("\tРазмер скрытых слоёв: ")),
             'Models/hidden_layer_count':    int(input("\tКол-во скрытых слоёв: ")),
             'Models/seed':                  int(input("\tСемя: "))

@@ -4,9 +4,10 @@ import clearml
 import pandas as pd
 import numpy as np
 from dataclasses import dataclass
+from .base import BaseNetwork
 
 
-class CustomNN:
+class CustomNN(BaseNetwork):
     @dataclass
     class __Layer:
         weights: any
@@ -35,6 +36,8 @@ class CustomNN:
                 weights=np.random.randn(output_size, input_size),
                 biases=np.zeros(output_size)
             ))
+
+    FILE_EXTENSION = ".json"
 
     @staticmethod
     def from_file(filepath: str):
@@ -107,7 +110,7 @@ class CustomNN:
 
     def train(self,
               training_data: pd.DataFrame,
-              iterations: int = 1000,
+              iterations: int = 100,
               learning_rate: float = 0.1,
               batch_size: int = 10,
               seed: int = None,
