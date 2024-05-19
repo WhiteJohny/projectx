@@ -1,6 +1,8 @@
 from __future__ import annotations
 import warnings
 import clearml
+import numpy as np
+
 from src.model.neural_networks import *
 from src.model.nlp import processing_string
 
@@ -39,7 +41,7 @@ class Model:
         :param news_text: The text of the news article
         :return: Float representing sentiment in the range of 0 (bad sentiment) to 1 (good sentiment)
         """
-        processed_text = processing_string(news_text, self.labels)
+        processed_text = np.atleast_2d(processing_string(news_text, self.labels))
         if processed_text.sum() < MIN_RECOGNIZED_WORDS:
             warnings.warn("model could not recognize enough words in given text", RuntimeWarning)
             return 0.5
