@@ -9,8 +9,8 @@ from src.bot.logic.handlers.simple import start_command, help_command, garbage_h
     rt_search_many_handler, rt_search_one_handler, nyp_search_many_handler, nyp_search_one_handler,\
     chinadaily_search_many_handler, chinadaily_search_one_handler, show_command
 
-from src.bot.logic.handlers.events import bot_start, stop_command, mode_choosing, news_choosing_one, news_choosing_many,\
-    callback_choosing, model_check, bot_stop, news_next
+from src.bot.logic.handlers.events import bot_start, bot_stop, mode_choosing, news_choosing_one, news_choosing_many,\
+    callback_choosing, model_check, stop_command, news_next
 
 from src.bot.logic.settings import bot
 from src.bot.logic.fsm import News

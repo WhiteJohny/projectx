@@ -1,10 +1,12 @@
-FROM PYTHON:3.11
+FROM python:3.11-slim
 
-WORKDIR /projectx
+COPY ./requirements.txt /tmp/requirements.txt
+RUN pip install --upgrade pip && pip install -r /tmp/requirements.txt
+RUN pip install --upgrade lxml_html_clean
 
-COPY requirements.txt /projectx
-RUN pip install --upgrade pip && install -r requirements.txt
+WORKDIR /app
+COPY . /app
 
-COPY /projectx /projectx
+ENV PYTHONPATH "${PYTHONPATH}:/app/src"
 
-CMD [ "python", "./main.py" ]
+CMD [ "python", "src/__main__.py" ]

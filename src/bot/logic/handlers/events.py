@@ -100,11 +100,11 @@ async def model_check(callback: CallbackQuery):
     link = callback.message.text.split("\n")[1]
 
     if link == LINKS_QUEUE.peek().split("\n")[1]:
+        LINKS_QUEUE.pop()
+
         if cb == "error":
             ans = "Отправлено на дообучение модели ✅"
             ERROR_LINKS.append(link)
-
-        LINKS_QUEUE.pop()
 
     return await callback.message.edit_text(text=f'{ans}\n{link}', reply_markup=news_check)
 
