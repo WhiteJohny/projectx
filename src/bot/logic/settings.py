@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import logging
 import os
 
 from aiogram import Bot
 from dotenv import load_dotenv
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 logger = logging.getLogger()
@@ -28,7 +30,7 @@ load_dotenv()
 @dataclass
 class Secrets:
     bot_token: str = os.getenv("BOT_TOKEN")
-    admin_id: int = int(os.getenv("ADMIN_ID"))
+    admins_id: str = os.getenv("ADMINS_ID")
 
 
 bot = Bot(token=Secrets.bot_token, parse_mode='HTML')

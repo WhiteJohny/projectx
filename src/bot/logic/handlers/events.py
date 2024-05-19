@@ -17,7 +17,8 @@ LINKS_QUEUE = queue.LinksQueue()
 
 async def bot_start():
     await commands.set_commands(bot)
-    return await bot.send_message(chat_id=Secrets.admin_id, text=bot_start_msg())
+    for admin in Secrets.admins_id.split(" "):
+        await bot.send_message(chat_id=int(admin), text=bot_start_msg())
 
 
 async def bot_stop():
@@ -28,9 +29,11 @@ async def bot_stop():
     file = FSInputFile(r"src/model/error_links.txt", "error_links.txt")
 
     try:
-        await bot.send_document(chat_id=Secrets.admin_id, document=file, caption=bot_stop_msg())
+        for admin in Secrets.admins_id.split(" "):
+            await bot.send_document(chat_id=int(admin), document=file, caption=bot_stop_msg())
     except Exception:
-        await bot.send_message(chat_id=Secrets.admin_id, text=bot_stop_msg())
+        for admin in Secrets.admins_id.split(" "):
+            await bot.send_message(chat_id=int(admin), text=bot_stop_msg())
 
 
 async def stop_command(message: Message):

@@ -32,4 +32,6 @@ async def set_commands(bot: Bot):
     bot_admin_commands.extend(bot_commands)
 
     await bot.set_my_commands(bot_commands, BotCommandScopeDefault())
-    await bot.set_my_commands(bot_admin_commands, BotCommandScopeChat(chat_id=Secrets.admin_id))
+
+    for admin in Secrets.admins_id.split(" "):
+        await bot.set_my_commands(bot_admin_commands, BotCommandScopeChat(chat_id=int(admin)))

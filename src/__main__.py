@@ -1,5 +1,4 @@
 import asyncio
-import nltk
 
 from aiogram import Dispatcher, F
 
