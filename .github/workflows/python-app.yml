@@ -17,8 +17,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        os: [ubuntu-jammy]
+        python-version: ["3.11"]
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -40,3 +40,19 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+        - name: Run command on remote server
+          uses: D3rHase/ssh-command-action@v0.2.2
+          with:
+            host: ${{secrets.HOST}}
+            user: ${{secrets.USER}}
+            private_key: ${{secrets.PRIVATE_KEY}}
+            command: |
+              cd ${{ secrets.SSH }};
+              git checkout main;
+              git pull;
+              docker-compose down;
+              docker-compose up -d --build;
