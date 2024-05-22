@@ -49,7 +49,7 @@ jobs:
           with:
             host: ${{secrets.SSH_HOST}}
             user: ${{secrets.SSH_USER}}
-            password: ${{secrets.SSH_PASSWORD}}
+            private_key: ${{secrets.SSH_PRIVATE_KEY}}
             command: |
               cd ${{ secrets.PROJECT_FOLDER }};
               git checkout main;
