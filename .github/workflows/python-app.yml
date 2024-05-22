@@ -52,7 +52,7 @@ jobs:
             private_key: ${{secrets.PRIVATE_KEY}}
             host_fingerprint: ${{secrets.FINGERPRINT}}
             command: |
-              cd ${{ secrets.SSH }};
+              cd ${{ secrets.PROJECT_FOLDER }};
               git checkout main;
               git pull;
               docker-compose down;
