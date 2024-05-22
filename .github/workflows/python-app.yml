@@ -50,6 +50,7 @@ jobs:
             host: ${{secrets.HOST}}
             user: ${{secrets.USER}}
             private_key: ${{secrets.PRIVATE_KEY}}
+            host_fingerprint: ${{secrets.FINGERPRINT}}
             command: |
               cd ${{ secrets.SSH }};
               git checkout main;
