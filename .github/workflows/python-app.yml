@@ -52,8 +52,8 @@ jobs:
             password: ${{secrets.SSH_PASSWORD}}
             port: ${{secrets.SSH_PORT}}
             script: |
-              ls -
-              cd ${{ secrets.PROJECT_FOLDER }}
+              ls -al
+              cd ${{secrets.PROJECT_FOLDER}}
               git checkout main
               git pull
               docker-compose down
