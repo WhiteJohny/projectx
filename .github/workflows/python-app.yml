@@ -52,9 +52,9 @@ jobs:
             password: ${{secrets.SSH_PASSWORD}}
             port: ${{secrets.SSH_PORT}}
             script: |
-              whoami
-              cd ${{ secrets.PROJECT_FOLDER }};
-              git checkout main;
-              git pull;
-              docker-compose down;
-              docker-compose up -d --build;
+              ls -
+              cd ${{ secrets.PROJECT_FOLDER }}
+              git checkout main
+              git pull
+              docker-compose down
+              docker-compose up -d --build
